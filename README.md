@@ -1,36 +1,151 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Health Surveillance System 🏥
 
-## Getting Started
+A comprehensive Smart Health Surveillance System for monitoring waterborne diseases and community health using AI-powered analytics, real-time environmental data, and interactive mapping.
 
-First, run the development server:
+## 🚀 Features
 
+### Core Features
+- **Real-time Health Monitoring** - Track disease outbreaks and health incidents
+- **Water Quality Analysis** - Monitor water sources with environmental data
+- **AI-Powered Insights** - Gemini AI for health analysis and recommendations
+- **Interactive Maps** - OpenStreetMap integration for geographic visualization
+- **Weather Integration** - Open-Meteo API for climate impact analysis
+- **Multi-user Access** - Role-based authentication for different user types
+
+### AI & ML Capabilities
+- **Outbreak Prediction** - Early warning systems for epidemic detection
+- **Risk Assessment** - Dynamic health risk calculations
+- **Symptom Analysis** - AI-powered symptom pattern recognition
+- **Health Recommendations** - Personalized prevention advice
+- **Report Summarization** - Automated health report generation
+- **Sentiment Analysis** - Community feedback analysis
+
+## 🛠 Tech Stack
+
+### Frontend
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Modern styling
+- **Leaflet** - Interactive maps
+- **Radix UI** - Accessible components
+
+### Backend
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **Convex** - Real-time database
+- **JWT** - Authentication
+
+### APIs & Services
+- **Gemini AI** - Google's AI for health analysis
+- **Open-Meteo** - Free weather and air quality data
+- **OpenStreetMap** - Free mapping and geocoding
+- **Nominatim** - Address lookup and search
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Git
+
+### 1. Clone Repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/ArrinPaul/health-surveillance.git
+cd health-surveillance
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+```bash
+# Install frontend dependencies
+npm install
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Install backend dependencies
+cd src/backend
+npm install
+cd ../..
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Environment Setup
+Update the `.env` file with your API keys:
 
-## Learn More
+```env
+# Environment variables for Health Surveillance System
 
-To learn more about Next.js, take a look at the following resources:
+# Convex Database
+CONVEX_DEPLOY_KEY=your_convex_deploy_key
+NEXT_PUBLIC_CONVEX_URL=your_convex_url
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# JWT Secret
+JWT_SECRET=your_jwt_secret_key_here
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# API Keys
+GEMINI_API_KEY=your_gemini_api_key_here
+OPENWEATHER_API_KEY=your_openweather_api_key
 
-## Deploy on Vercel
+# Free APIs (No keys needed)
+OPEN_METEO_URL=https://api.open-meteo.com/v1/forecast
+NOMINATIM_URL=https://nominatim.openstreetmap.org
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Other configurations
+NODE_ENV=development
+PORT=3000
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Get API Keys
+
+#### Gemini API Key
+1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Sign in with Google account
+3. Create new API key
+4. Copy key to `.env` file
+
+#### JWT Secret
+Generate a secure JWT secret:
+```bash
+openssl rand -base64 32
+```
+
+## 🚀 Quick Start
+
+```bash
+# Start frontend (Next.js)
+npm run dev
+
+# Start backend (separate terminal)
+cd src/backend
+npm start
+```
+
+The application will be available at:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:3000/api
+
+## 📚 API Documentation
+
+### Health Data Endpoints
+- `GET /api/water-quality/current` - Current water quality data
+- `GET /api/water-quality/health-facilities` - Nearby health facilities
+- `POST /api/reports` - Submit health report
+- `GET /api/alerts` - Get health alerts
+
+### AI-Powered Endpoints
+- `POST /api/predict` - Disease outbreak prediction
+- `POST /api/sentiment-analysis` - Analyze report sentiment
+- `POST /api/risk-assessment` - Calculate health risks
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+🚀 **Your Health Surveillance System is now running!**

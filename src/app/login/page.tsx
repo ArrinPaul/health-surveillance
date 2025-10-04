@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +21,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -72,7 +72,7 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: any) => setEmail(e.target.value)}
                 required
                 className="mt-2 h-11 rounded-xl"
                 placeholder="you@example.com"
@@ -87,7 +87,7 @@ export default function LoginPage() {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: any) => setPassword(e.target.value)}
                 required
                 className="mt-2 h-11 rounded-xl"
                 placeholder="••••••••"
@@ -98,7 +98,7 @@ export default function LoginPage() {
               <Label htmlFor="role" className="text-sm font-medium">
                 {t('role')}
               </Label>
-              <Select value={role} onValueChange={(value) => setRole(value as UserRole)}>
+              <Select value={role} onValueChange={(value: string) => setRole(value as UserRole)}>
                 <SelectTrigger className="mt-2 h-11 rounded-xl">
                   <SelectValue placeholder={t('selectRole')} />
                 </SelectTrigger>

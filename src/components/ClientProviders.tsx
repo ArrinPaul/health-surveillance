@@ -3,33 +3,16 @@
 import { AuthProvider } from '@/contexts/AuthContext';
 import { SettingsProvider } from '@/contexts/SettingsContext';
 import AppLayout from './AppLayout';
-import { useEffect } from 'react';
-import '@/lib/i18n';
-import { useTranslation } from 'react-i18next';
+import ConvexClientProvider from './ConvexProvider';
 
-function I18nWrapper({ children }: { children: React.ReactNode }) {
-  const { i18n } = useTranslation();
-
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage) {
-      i18n.changeLanguage(savedLanguage);
-    }
-  }, [i18n]);
-
-  return <>{children}</>;
-}
-
-export default function ClientProviders({ children }: { children: React.ReactNode }) {
+export default function ClientProviders({ children }: { children: any }) {
   return (
-    <SettingsProvider>
-      <AuthProvider>
-        <I18nWrapper>
-          <AppLayout>
-            {children}
-          </AppLayout>
-        </I18nWrapper>
-      </AuthProvider>
-    </SettingsProvider>
+    <ConvexClientProvider children={
+      <SettingsProvider children={
+        <AuthProvider children={
+          <AppLayout children={children} />
+        } />
+      } />
+    } />
   );
 }
