@@ -1,0 +1,191 @@
+"use client";
+
+import { useTranslation } from 'react-i18next';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Activity, AlertTriangle, Droplet, TrendingUp } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import ProtectedRoute from '@/components/ProtectedRoute';
+
+const DiseaseMap = dynamic(() => import('@/components/DiseaseMap'), { ssr: false });
+
+export default function DashboardPage() {
+  const { t } = useTranslation();
+
+  const stats = [
+    {
+      title: t('activeCases'),
+      value: '132',
+      change: '+12%',
+      icon: Activity,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-100 dark:bg-blue-900/30'
+    },
+    {
+      title: t('predictedOutbreaks'),
+      value: '3',
+      change: '+1',
+      icon: AlertTriangle,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-100 dark:bg-orange-900/30'
+    },
+    {
+      title: t('waterQualityAlerts'),
+      value: '8',
+      change: '-2',
+      icon: Droplet,
+      color: 'text-red-600',
+      bgColor: 'bg-red-100 dark:bg-red-900/30'
+    },
+    {
+      title: t('interventions'),
+      value: '15',
+      change: '+5',
+      icon: TrendingUp,
+      color: 'text-green-600',
+      bgColor: 'bg-green-100 dark:bg-green-900/30'
+    }
+  ];
+
+  const casesTrendData = [
+    { month: 'Jan', cases: 45, predictions: 48 },
+    { month: 'Feb', cases: 52, predictions: 55 },
+    { month: 'Mar', cases: 48, predictions: 50 },
+    { month: 'Apr', cases: 61, predictions: 65 },
+    { month: 'May', cases: 75, predictions: 80 },
+    { month: 'Jun', cases: 88, predictions: 95 },
+    { month: 'Jul', cases: 132, predictions: 140 }
+  ];
+
+  const waterQualityData = [
+    { month: 'Jan', pH: 7.2, turbidity: 3.5 },
+    { month: 'Feb', pH: 7.1, turbidity: 4.2 },
+    { month: 'Mar', pH: 6.9, turbidity: 5.1 },
+    { month: 'Apr', pH: 7.0, turbidity: 4.8 },
+    { month: 'May', pH: 6.8, turbidity: 6.2 },
+    { month: 'Jun', pH: 6.7, turbidity: 7.5 },
+    { month: 'Jul', pH: 6.9, turbidity: 6.8 }
+  ];
+
+  const diseaseDistribution = [
+    { name: 'Waterborne', value: 45, color: '#3b82f6' },
+    { name: 'Vector-borne', value: 35, color: '#10b981' },
+    { name: 'Respiratory', value: 30, color: '#f59e0b' },
+    { name: 'Others', value: 22, color: '#8b5cf6' }
+  ];
+
+  return (
+    <ProtectedRoute allowedRoles={['admin', 'health-worker']}>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">{t('dashboard')}</h1>
+          <p className="text-muted-foreground mt-2">
+            Monitor health surveillance and early warning indicators
+          </p>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {stats.map((stat, index) => (
+            <Card key={index} className="backdrop-blur-xl bg-card/50">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </CardTitle>
+                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+                  <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{stat.value}</div>
+                <p className={`text-sm mt-1 ${stat.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+                  {stat.change} from last month
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Map and Disease Distribution */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          <Card className="lg:col-span-2 backdrop-blur-xl bg-card/50">
+            <CardHeader>
+              <CardTitle>{t('diseaseHotspots')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DiseaseMap />
+            </CardContent>
+          </Card>
+
+          <Card className="backdrop-blur-xl bg-card/50">
+            <CardHeader>
+              <CardTitle>Disease Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={diseaseDistribution}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {diseaseDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Charts */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Card className="backdrop-blur-xl bg-card/50">
+            <CardHeader>
+              <CardTitle>{t('casesTrend')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={casesTrendData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="cases" stroke="#3b82f6" strokeWidth={2} name="Actual Cases" />
+                  <Line type="monotone" dataKey="predictions" stroke="#10b981" strokeWidth={2} strokeDasharray="5 5" name="Predicted" />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card className="backdrop-blur-xl bg-card/50">
+            <CardHeader>
+              <CardTitle>{t('waterQualityTrend')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={waterQualityData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="pH" fill="#3b82f6" name="pH Level" />
+                  <Bar dataKey="turbidity" fill="#f59e0b" name="Turbidity (NTU)" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </ProtectedRoute>
+  );
+}
