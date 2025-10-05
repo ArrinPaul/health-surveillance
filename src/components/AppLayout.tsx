@@ -1,6 +1,8 @@
 "use client";
 
 import Navigation from './Navigation';
+import AIChatbot from './AIChatbot';
+import VoiceEnabledChatbot from './VoiceEnabledChatbot';
 import { usePathname } from 'next/navigation';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -19,6 +21,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </main>
+      <VoiceEnabledChatbot />
     </div>
   );
 }

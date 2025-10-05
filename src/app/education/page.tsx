@@ -81,21 +81,51 @@ export default function EducationPage() {
   const resources = [
     {
       type: 'video',
-      title: 'Safe Water Practices',
-      duration: '5 min',
-      thumbnail: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&h=225&fit=crop'
+      title: 'Safe Water Practices - WHO Guidelines',
+      duration: '5:32',
+      thumbnail: 'https://img.youtube.com/vi/06X5HYynP5E/maxresdefault.jpg',
+      youtubeId: '06X5HYynP5E', // Water safety practices
+      description: 'Learn essential water safety practices recommended by WHO'
     },
     {
       type: 'video',
-      title: 'Hand Washing Techniques',
-      duration: '3 min',
-      thumbnail: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=400&h=225&fit=crop'
+      title: 'Proper Hand Washing Techniques',
+      duration: '3:15',
+      thumbnail: 'https://img.youtube.com/vi/3PmVJQUCm4E/maxresdefault.jpg',
+      youtubeId: '3PmVJQUCm4E', // Hand washing demonstration
+      description: 'Step-by-step guide to proper hand hygiene'
     },
     {
       type: 'video',
       title: 'Preventing Waterborne Diseases',
-      duration: '7 min',
-      thumbnail: 'https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?w=400&h=225&fit=crop'
+      duration: '7:48',
+      thumbnail: 'https://img.youtube.com/vi/BjOFzESOJzc/maxresdefault.jpg',
+      youtubeId: 'BjOFzESOJzc', // Disease prevention
+      description: 'Understanding and preventing common waterborne illnesses'
+    },
+    {
+      type: 'video',
+      title: 'Community Health & Sanitation',
+      duration: '6:22',
+      thumbnail: 'https://img.youtube.com/vi/TqKQ94DtS54/maxresdefault.jpg',
+      youtubeId: 'TqKQ94DtS54', // Sanitation practices
+      description: 'Building healthier communities through proper sanitation'
+    },
+    {
+      type: 'video',
+      title: 'Mosquito Control & Disease Prevention',
+      duration: '4:56',
+      thumbnail: 'https://img.youtube.com/vi/MmONx8OKm8I/maxresdefault.jpg',
+      youtubeId: 'MmONx8OKm8I', // Mosquito prevention
+      description: 'Effective strategies to control mosquitos and prevent vector-borne diseases'
+    },
+    {
+      type: 'video',
+      title: 'Emergency First Aid Basics',
+      duration: '8:33',
+      thumbnail: 'https://img.youtube.com/vi/C_QAI2lg5g0/maxresdefault.jpg',
+      youtubeId: 'C_QAI2lg5g0', // First aid basics
+      description: 'Essential first aid techniques everyone should know'
     }
   ];
 
@@ -152,24 +182,33 @@ export default function EducationPage() {
             <div className="grid md:grid-cols-3 gap-6">
               {resources.map((resource, index) => (
                 <div key={index} className="group cursor-pointer">
-                  <div className="relative overflow-hidden rounded-lg mb-3">
+                  <div 
+                    className="relative overflow-hidden rounded-lg mb-3"
+                    onClick={() => window.open(`https://www.youtube.com/watch?v=${resource.youtubeId}`, '_blank')}
+                  >
                     <img 
                       src={resource.thumbnail} 
                       alt={resource.title}
                       className="w-full aspect-video object-cover group-hover:scale-105 transition-transform"
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                        <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-primary border-b-8 border-b-transparent ml-1"></div>
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition-colors">
+                      <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center group-hover:bg-red-700 transition-colors shadow-lg">
+                        <div className="w-0 h-0 border-t-6 border-t-transparent border-l-10 border-l-white border-b-6 border-b-transparent ml-1"></div>
                       </div>
                     </div>
                     <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs text-white">
                       {resource.duration}
                     </div>
+                    <div className="absolute top-2 left-2 bg-red-600 px-2 py-1 rounded text-xs text-white font-medium">
+                      YouTube
+                    </div>
                   </div>
-                  <h3 className="font-medium group-hover:text-primary transition-colors">
+                  <h3 className="font-medium group-hover:text-primary transition-colors mb-1">
                     {resource.title}
                   </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {resource.description}
+                  </p>
                 </div>
               ))}
             </div>

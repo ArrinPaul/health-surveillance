@@ -6,7 +6,13 @@
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "dev:all": "node dev-server.js",
+        "dev:concurrent": "concurrently \"npm run dev\" \"npm run dev --prefix src/backend\"",
+        "start:all": "concurrently \"npm run build && npm run start\" \"npm run start --prefix src/backend\"",
+        "security-check": "node security-check.js",
+        "test:ai": "node test-ai-features.js",
+        "test:full": "npm run security-check && npm run test:ai"
     },
     "dependencies": {
         "@babel/parser": "^7.28.4",
@@ -58,6 +64,7 @@
         "clsx": "^2.1.1",
         "cmdk": "^1.1.1",
         "cobe": "^0.6.4",
+        "concurrently": "^8.2.2",
         "convex": "^1.27.3",
         "date-fns": "^4.1.0",
         "dotted-map": "^2.2.3",

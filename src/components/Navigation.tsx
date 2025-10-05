@@ -22,6 +22,7 @@ import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { useState } from 'react';
 import ThemeToggle from './ThemeToggle';
+import LanguageSelector from './LanguageSelector';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -33,6 +34,7 @@ export default function Navigation() {
     { href: '/dashboard', label: t('dashboard'), icon: LayoutDashboard, roles: ['admin', 'health-worker'] },
     { href: '/health-data', label: t('healthData'), icon: FileText, roles: ['admin', 'health-worker'] },
     { href: '/water-quality', label: t('waterQuality'), icon: Droplet, roles: ['admin', 'health-worker'] },
+    { href: '/ai-features', label: '🤖 AI Features', icon: LayoutDashboard, roles: ['admin', 'health-worker'] },
     { href: '/alerts', label: t('alerts'), icon: Bell, roles: ['admin', 'health-worker'] },
     { href: '/education', label: t('education'), icon: BookOpen, roles: ['admin', 'health-worker', 'community-user'] },
     { href: '/community-reports', label: t('communityReports'), icon: MessageSquare, roles: ['admin', 'health-worker', 'community-user'] },
@@ -95,15 +97,18 @@ export default function Navigation() {
           })}
         </div>
         
-        <div className="flex items-center gap-2 px-4 py-3">
-          <ThemeToggle />
+        <div className="flex flex-col gap-2 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <LanguageSelector />
+          </div>
           <Button
             onClick={() => {
               logout();
               setOpen(false);
             }}
             variant="ghost"
-            className="flex-1 justify-start gap-3 text-muted-foreground hover:text-foreground hover:bg-accent rounded-xl"
+            className="justify-start gap-3 text-muted-foreground hover:text-foreground hover:bg-accent rounded-xl"
           >
             <LogOut className="w-5 h-5" />
             <span className="text-[15px]">{t('logout')}</span>
@@ -120,6 +125,7 @@ export default function Navigation() {
         <div className="flex items-center justify-between px-6 h-16">
           <h1 className="text-lg font-semibold tracking-tight">Health Surveillance</h1>
           <div className="flex items-center gap-2">
+            <LanguageSelector />
             <ThemeToggle />
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>

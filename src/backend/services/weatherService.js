@@ -125,6 +125,51 @@ class WeatherService {
     return codes[code] || 'Unknown weather condition';
   }
 
+  async getWeatherData(lat, lon) {
+    try {
+      // Use OpenWeatherMap API if available, otherwise fall back to Open-Meteo
+      if (process.env.OPENWEATHER_API_KEY) {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.OPENWEATHER_API_KEY}`
+        );
+        
+        if (response.ok) {
+          const data = await response.json();
+          return {
+            temperature: data.main.temp,
+            humidity: data.main.humidity,
+            rainfall: data.rain ? data.rain['1h'] || 0 : 0,
+            pressure: data.main.pressure,
+            windSpeed: data.wind.speed,
+            description: data.weather[0].description
+          };
+        }
+      }
+      
+      // Fallback to Open-Meteo (free)
+      const currentWeather = await this.getCurrentWeather(lat, lon);
+      const detailedWeather = await this.getDetailedWeather(lat, lon, 1);
+      
+      return {
+        temperature: currentWeather.temperature + 273.15, // Convert to Kelvin for compatibility
+        humidity: detailedWeather.hourly.humidity[0] || 60,
+        rainfall: detailedWeather.hourly.precipitation[0] || 0,
+        windSpeed: currentWeather.windspeed,
+        description: currentWeather.description
+      };
+    } catch (error) {
+      console.error('Weather data error:', error);
+      // Return reasonable defaults if all services fail
+      return {
+        temperature: 298.15, // 25°C in Kelvin
+        humidity: 65,
+        rainfall: 0,
+        windSpeed: 5,
+        description: 'Data unavailable'
+      };
+    }
+  }
+
   calculateAQI(airData) {
     // Simple AQI calculation based on PM2.5
     if (!airData.pm2_5) return 'unavailable';

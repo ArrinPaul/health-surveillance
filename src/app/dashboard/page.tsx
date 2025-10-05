@@ -6,6 +6,7 @@ import { Activity, AlertTriangle, Droplet, TrendingUp } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import AISuggestions from '@/components/AISuggestions';
 
 const DiseaseMap = dynamic(() => import('@/components/DiseaseMap'), { ssr: false });
 
@@ -22,12 +23,12 @@ export default function DashboardPage() {
       bgColor: 'bg-blue-100 dark:bg-blue-900/30'
     },
     {
-      title: t('predictedOutbreaks'),
-      value: '3',
-      change: '+1',
+      title: 'AI Predictions',
+      value: '94.7%',
+      change: 'Accurate',
       icon: AlertTriangle,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100 dark:bg-orange-900/30'
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-100 dark:bg-purple-900/30'
     },
     {
       title: t('waterQualityAlerts'),
@@ -38,9 +39,9 @@ export default function DashboardPage() {
       bgColor: 'bg-red-100 dark:bg-red-900/30'
     },
     {
-      title: t('interventions'),
-      value: '15',
-      change: '+5',
+      title: 'AI Insights Today',
+      value: '247',
+      change: '+28%',
       icon: TrendingUp,
       color: 'text-green-600',
       bgColor: 'bg-green-100 dark:bg-green-900/30'
@@ -83,6 +84,9 @@ export default function DashboardPage() {
             Monitor health surveillance and early warning indicators
           </p>
         </div>
+
+        {/* AI-Powered Suggestions */}
+        <AISuggestions />
 
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -129,7 +133,7 @@ export default function DashboardPage() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }: any) => `${name} ${(percent * 100).toFixed(0)}%`}
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"

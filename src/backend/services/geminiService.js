@@ -8,7 +8,7 @@ class GeminiService {
       this.model = null;
     } else {
       this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-      this.model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
+      this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     }
   }
 
@@ -134,6 +134,70 @@ class GeminiService {
     } catch (error) {
       console.error('Gemini symptom analysis error:', error);
       return 'Error analyzing symptoms. Please check your Gemini API key.';
+    }
+  }
+
+  async analyzeHealthData(healthData) {
+    if (!this.model) {
+      return 'AI health data analysis not available. Please configure GEMINI_API_KEY.';
+    }
+
+    try {
+      const prompt = `
+      As a health expert, analyze this health data and provide insights:
+      
+      Data: ${JSON.stringify(healthData)}
+      
+      Provide:
+      1. Health status assessment
+      2. Risk factors identified
+      3. Recommendations for improvement
+      4. Early warning indicators
+      5. Preventive measures
+      
+      Focus on water quality impacts, disease prevention, and community health patterns.
+      Keep the response under 300 words and actionable.
+      `;
+      
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      return response.text();
+    } catch (error) {
+      console.error('Gemini health data analysis error:', error);
+      return 'Error analyzing health data. Please check your Gemini API key.';
+    }
+  }
+
+  async analyzeWaterQuality(waterData) {
+    if (!this.model) {
+      return 'AI water quality analysis not available. Please configure GEMINI_API_KEY.';
+    }
+
+    try {
+      const prompt = `
+      As a water quality expert, analyze this water quality data:
+      
+      pH: ${waterData.pH}
+      Turbidity: ${waterData.turbidity}
+      Temperature: ${waterData.temperature || 'N/A'}
+      Contaminants: ${waterData.contaminants || 'N/A'}
+      
+      Provide:
+      1. Water safety assessment
+      2. Risk level (Low/Medium/High/Critical)
+      3. Specific health concerns
+      4. Treatment recommendations
+      5. Safety measures
+      
+      Focus on immediate health risks and actionable steps.
+      `;
+      
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      return response.text();
+    } catch (error) {
+      console.error('Gemini water quality analysis error:', error);
+      return 'Error analyzing water quality. Please check your Gemini API key.';
     }
   }
 }

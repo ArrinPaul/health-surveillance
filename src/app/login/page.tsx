@@ -17,7 +17,6 @@ import ThemeToggle from '@/components/ThemeToggle';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('community-user');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
@@ -27,12 +26,13 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password, role);
+      // Login without specifying role - backend will determine user's role from signup data
+      const userData = await login(email, password);
       
-      // Role-based redirect
-      if (role === 'admin' || role === 'health-worker') {
+      // Role-based redirect based on user's stored role
+      if (userData.role === 'admin' || userData.role === 'health-worker') {
         router.push('/dashboard');
-      } else if (role === 'community-user') {
+      } else if (userData.role === 'community-user') {
         router.push('/education');
       }
     } catch (error) {
@@ -96,36 +96,7 @@ export default function LoginPage() {
               />
             </div>
 
-            <div>
-              <Label htmlFor="role" className="text-sm font-medium">
-                {t('role')}
-              </Label>
-              <Select value={role} onValueChange={(value: string) => setRole(value as UserRole)}>
-                <SelectTrigger className="mt-2 h-11 rounded-xl">
-                  <SelectValue placeholder={t('selectRole')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">
-                    <div className="flex items-center gap-2">
-                      <Shield className="w-4 h-4" />
-                      {t('admin')}
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="health-worker">
-                    <div className="flex items-center gap-2">
-                      <Stethoscope className="w-4 h-4" />
-                      {t('healthWorker')}
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="community-user">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      {t('communityUser')}
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+
 
             <Button 
               type="submit" 

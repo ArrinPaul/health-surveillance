@@ -54,3 +54,27 @@ convex/_generated/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Backup files
+*.backup
+*.backup.*
+*.old
+*.temp
+
+# Lock files (keep only npm)
+bun.lock
+yarn.lock
+
+# Python cache (not needed for this project)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Additional log files
+*.log
+logs/
+
+# Temporary files
+.tmp/
+tmp/

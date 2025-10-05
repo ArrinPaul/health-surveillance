@@ -19,6 +19,7 @@ app.use(express.json());
 setupSwagger(app);
 
 // Routes
+app.use('/ai', require('./routes/ai'));
 app.use('/auth', require('./routes/auth'));
 app.use('/reports', require('./routes/reports'));
 app.use('/water-quality', require('./routes/waterQuality'));
@@ -39,6 +40,8 @@ app.use('/risk-map', require('./routes/riskMap'));
 app.use('/sentiment-analysis', require('./routes/sentimentAnalysis'));
 app.use('/summarize', require('./routes/summarize'));
 app.use('/worker-performance', require('./routes/workerPerformance'));
+app.use('/chatbot', require('./routes/chatbot'));
+app.use('/suggestions', require('./routes/suggestions'));
 
 // Error handling middleware
 app.use(errorHandler);

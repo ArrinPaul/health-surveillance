@@ -1,6 +1,6 @@
-# Health Surveillance System 
+# Health Surveillance System
 
-A comprehensive Smart Health Surveillance System for monitoring waterborne diseases and community health using AI-powered analytics, real-time environmental data, and interactive mapping.
+A comprehensive web-based health surveillance system designed for monitoring water quality, disease outbreaks, and community health in India. The system supports 15 Indian languages and includes AI-powered features for health assistance and recommendations.
 
 ## Features
 
@@ -151,5 +151,5 @@ This project is licensed under the MIT License.
 **Your Health Surveillance System is now running!**
 
 
-#if i am hosting this into vercel and if my api keys are not mentioned in github repo #which i am deploying 
-#will all AI features work ??
+#if i am hosting this into vercel and if my api keys are not mentioned in github repo which i am deploying 
+will all AI features work ??
