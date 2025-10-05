@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+
+// Mock user storage (replace with Convex integration later)
+const mockUsers = [];
 
 // Register a new user
 exports.register = async (req, res) => {
@@ -8,7 +10,7 @@ exports.register = async (req, res) => {
 
   try {
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = mockUsers.find(user => user.email === email);
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
@@ -17,10 +19,18 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    const user = new User({ name, email, password: hashedPassword, role, location });
-    await user.save();
+    const user = { 
+      id: Date.now().toString(), 
+      name, 
+      email, 
+      password: hashedPassword, 
+      role, 
+      location,
+      createdAt: new Date().toISOString()
+    };
+    mockUsers.push(user);
 
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ message: 'User registered successfully', userId: user.id });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -28,11 +38,38 @@ exports.register = async (req, res) => {
 
 // Login user
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
 
   try {
-    // Find user by email
-    const user = await User.findOne({ email });
+    // Find user by email in mock storage
+    const user = mockUsers.find(u => u.email === email);
+    
+    // If no user in mock storage, allow login for demo purposes
+    if (!user && email && password) {
+      // Create a demo user for testing
+      const demoUser = {
+        id: Date.now().toString(),
+        name: email.split('@')[0],
+        email,
+        role: role || 'health-worker',
+        location: 'Demo Location'
+      };
+      
+      // Generate JWT
+      const token = jwt.sign(
+        { id: demoUser.id, role: demoUser.role },
+        process.env.JWT_SECRET || 'default-secret-key',
+        { expiresIn: '1h' }
+      );
+
+      return res.status(200).json({ 
+        token, 
+        role: demoUser.role,
+        user: demoUser,
+        message: 'Demo login successful'
+      });
+    }
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -45,12 +82,12 @@ exports.login = async (req, res) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
+      { id: user.id, role: user.role },
+      process.env.JWT_SECRET || 'default-secret-key',
       { expiresIn: '1h' }
     );
 
-    res.status(200).json({ token, role: user.role });
+    res.status(200).json({ token, role: user.role, user });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -59,12 +96,23 @@ exports.login = async (req, res) => {
 // Get user profile
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    // Find user in mock storage
+    const user = mockUsers.find(u => u.id === req.user.id);
+    
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      // Return demo user profile for testing
+      return res.status(200).json({
+        id: req.user.id,
+        name: 'Demo User',
+        email: 'demo@example.com',
+        role: req.user.role || 'health-worker',
+        location: 'Demo Location'
+      });
     }
 
-    res.status(200).json(user);
+    // Remove password from response
+    const { password, ...userProfile } = user;
+    res.status(200).json(userProfile);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

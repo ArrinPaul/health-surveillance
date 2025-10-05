@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
@@ -9,13 +9,6 @@ export const metadata: Metadata = {
   title: "Smart Health Surveillance System",
   description: "Early Warning System for Health Officials and Community - Disease Monitoring and Water Quality Tracking",
   manifest: "/manifest.json",
-  themeColor: "#3b82f6",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -28,29 +21,27 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#3b82f6",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: any;
 }>) {
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body className="antialiased">
         <ErrorReporter />
-        <Script
-          src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts//route-messenger.js"
-          strategy="afterInteractive"
-          data-target-origin="*"
-          data-message-type="ROUTE_CHANGE"
-          data-include-search-params="true"
-          data-only-in-iframe="true"
-          data-debug="true"
-          data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
-        />
         <Script id="suppress-resize-observer" strategy="beforeInteractive">
           {`
             // Suppress benign ResizeObserver error (common with Radix UI/shadcn)

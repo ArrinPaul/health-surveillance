@@ -7,12 +7,14 @@ import ConvexClientProvider from './ConvexProvider';
 
 export default function ClientProviders({ children }: { children: any }) {
   return (
-    <ConvexClientProvider children={
-      <SettingsProvider children={
-        <AuthProvider children={
-          <AppLayout children={children} />
-        } />
-      } />
-    } />
+    <ConvexClientProvider>
+      <SettingsProvider>
+        <AuthProvider>
+          <AppLayout>
+            {children}
+          </AppLayout>
+        </AuthProvider>
+      </SettingsProvider>
+    </ConvexClientProvider>
   );
 }

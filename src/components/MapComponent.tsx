@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
+// @ts-ignore - React 19 compatibility issue
+const { useEffect, useRef } = React;
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 

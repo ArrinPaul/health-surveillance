@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
+// @ts-ignore - React 19 compatibility issue
+const { useState } = React;
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';

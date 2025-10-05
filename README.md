@@ -1,8 +1,8 @@
-# Health Surveillance System 🏥
+# Health Surveillance System 
 
 A comprehensive Smart Health Surveillance System for monitoring waterborne diseases and community health using AI-powered analytics, real-time environmental data, and interactive mapping.
 
-## 🚀 Features
+## Features
 
 ### Core Features
 - **Real-time Health Monitoring** - Track disease outbreaks and health incidents
@@ -20,7 +20,7 @@ A comprehensive Smart Health Surveillance System for monitoring waterborne disea
 - **Report Summarization** - Automated health report generation
 - **Sentiment Analysis** - Community feedback analysis
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 ### Frontend
 - **Next.js 15** - React framework with App Router
@@ -41,7 +41,7 @@ A comprehensive Smart Health Surveillance System for monitoring waterborne disea
 - **OpenStreetMap** - Free mapping and geocoding
 - **Nominatim** - Address lookup and search
 
-## 📦 Installation
+## Installation
 
 ### Prerequisites
 - Node.js 18+ 
@@ -106,7 +106,7 @@ Generate a secure JWT secret:
 openssl rand -base64 32
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ```bash
 # Start frontend (Next.js)
@@ -121,7 +121,7 @@ The application will be available at:
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3000/api
 
-## 📚 API Documentation
+##  API Documentation
 
 ### Health Data Endpoints
 - `GET /api/water-quality/current` - Current water quality data
@@ -134,7 +134,7 @@ The application will be available at:
 - `POST /api/sentiment-analysis` - Analyze report sentiment
 - `POST /api/risk-assessment` - Calculate health risks
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing-feature`)
@@ -142,10 +142,14 @@ The application will be available at:
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open Pull Request
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License.
 
 ---
 
-🚀 **Your Health Surveillance System is now running!**
+**Your Health Surveillance System is now running!**
+
+
+#if i am hosting this into vercel and if my api keys are not mentioned in github repo #which i am deploying 
+#will all AI features work ??
