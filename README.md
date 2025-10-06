@@ -1,6 +1,16 @@
-# Health Surveillance System
+# Health Surveillance
 
-A comprehensive web-based health surveillance system designed for monitoring water quality, disease outbreaks, and community health in India. The system supports 15 Indian languages and includes AI-powered features for health assistance and recommendations.
+**Project Summary:**  
+A comprehensive web-based health surveillance system designed for monitoring water quality, disease outbreaks, and community health in India. The system supports 15 Indian languages and offers AI-powered features for health assistance and recommendations.
+
+**Tech Stack:**  
+- **Frontend:** Next.js 15, React, TypeScript, Tailwind CSS, Leaflet, Radix UI  
+- **Backend:** Node.js, Express.js, Convex, JWT Authentication  
+- **AI & ML Capabilities:** Outbreak Prediction, Risk Assessment, Symptom Analysis, Health Recommendations, Report Summarization, Sentiment Analysis  
+- **APIs & Services:** Gemini AI, Open-Meteo API, OpenStreetMap, Nominatim  
+- **DevOps:** npm, Git
+
+---
 
 ## Features
 
