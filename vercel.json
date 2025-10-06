@@ -1,10 +1,8 @@
 {
-  "version": 2,
   "framework": "nextjs",
   "functions": {
     "src/app/api/**/*.ts": {
-      "maxDuration": 30
+      "maxDuration": 10
     }
-  },
-  "regions": ["bom1", "hnd1", "iad1"]
+  }
 }
