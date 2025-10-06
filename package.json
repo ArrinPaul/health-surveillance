@@ -9,7 +9,7 @@
         "lint": "next lint",
         "deploy": "vercel --prod",
         "deploy:preview": "vercel",
-        "postbuild": "next-sitemap",
+        "generate-sitemap": "next-sitemap",
         "security-check": "node security-check.js",
         "test:ai": "node test-ai-features.js",
         "test:full": "npm run security-check && npm run test:ai",
