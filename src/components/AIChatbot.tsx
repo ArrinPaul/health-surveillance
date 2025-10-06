@@ -127,32 +127,174 @@ const AIChatbot: React.FC = () => {
     return suggestions[i18n.language as keyof typeof suggestions] || suggestions.en;
   };
 
-  // Text-to-speech function
+  // Load voices when component mounts
+  useEffect(() => {
+    const loadVoices = () => {
+      if (speechSynthesis.getVoices().length === 0) {
+        speechSynthesis.addEventListener('voiceschanged', loadVoices, { once: true });
+      }
+    };
+    loadVoices();
+  }, []);
+
+  // Enhanced text-to-speech function with better language support and text cleaning
   const speakText = (text: string) => {
-    if (!voiceEnabled || !text) return;
+    if (!voiceEnabled || !text || !('speechSynthesis' in window)) {
+      console.log('🔇 Speech disabled or not supported');
+      return;
+    }
 
     try {
+      // Cancel any ongoing speech
       speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
       
-      // Set voice based on current language
+      // Clean text for better speech synthesis
+      const cleanText = text
+        .replace(/[#*_~`]/g, '') // Remove markdown formatting
+        .replace(/🚰|🧼|🏥|💡|🚨|⚠️|🔬|🌡️|💊|🚑|📞|📱|✅|❌|🎉|🌟|⭐|🔥|💪|🛡️|📊|📈|📋|📌/g, '') // Remove emojis
+        .replace(/\n•/g, '. ') // Replace bullet points with periods
+        .replace(/\n\d+\./g, '. ') // Replace numbered lists with periods
+        .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
+        .replace(/__(.*?)__/g, '$1') // Remove underline markdown
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove links, keep text
+        .replace(/\n+/g, '. ') // Replace multiple newlines with periods
+        .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+        .replace(/\.{2,}/g, '.') // Replace multiple periods with single period
+        .trim();
+
+      if (!cleanText) return;
+      
+      // Enhanced voice loading with retry mechanism
+      const speakWithVoice = () => {
+        const voices = speechSynthesis.getVoices();
+        console.log(`🎵 Available voices: ${voices.length}, Current language: ${i18n.language}`);
+        
+        // If no voices are available yet, wait and retry
+        if (voices.length === 0) {
+          console.log('⏳ Waiting for voices to load...');
+          setTimeout(() => {
+            if (speechSynthesis.getVoices().length > 0) {
+              speakWithVoice();
+            } else {
+              console.log('⚠️ No voices available after retry');
+            }
+          }, 100);
+          return;
+        }
+        
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        
+        // Enhanced language mapping for better voice selection
+        const languageMap: { [key: string]: string[] } = {
+          'hi': ['hi-IN', 'hi', 'en-IN'],
+          'bn': ['bn-IN', 'bn-BD', 'bn', 'en-IN'],
+          'ta': ['ta-IN', 'ta', 'en-IN'],
+          'te': ['te-IN', 'te', 'en-IN'],
+          'mr': ['mr-IN', 'mr', 'en-IN'],
+          'gu': ['gu-IN', 'gu', 'en-IN'],
+          'kn': ['kn-IN', 'kn', 'en-IN'],
+          'ml': ['ml-IN', 'ml', 'en-IN'],
+          'pa': ['pa-IN', 'pa-Guru-IN', 'pa', 'en-IN'],
+          'or': ['or-IN', 'or', 'en-IN'],
+          'as': ['as-IN', 'as', 'en-IN'],
+          'ur': ['ur-IN', 'ur-PK', 'ur', 'en-IN'],
+          'gom': ['hi-IN', 'mr-IN', 'en-IN'], // Konkani fallback to Hindi/Marathi
+          'ne': ['ne-NP', 'ne', 'hi-IN', 'en-IN'],
+          'en': ['en-IN', 'en-US', 'en-GB', 'en-AU', 'en']
+        };
+
+        const currentLang = i18n.language;
+        const preferredLangs = languageMap[currentLang] || ['en-US', 'en'];
+        
+        let selectedVoice = null;
+        
+        // Primary search: exact language match
+        for (const lang of preferredLangs) {
+          selectedVoice = voices.find(v => 
+            v.lang === lang || 
+            v.lang.startsWith(lang + '-') ||
+            v.name.toLowerCase().includes(lang.toLowerCase())
+          );
+          if (selectedVoice) break;
+        }
+        
+        // Secondary search: partial match for Indian languages
+        if (!selectedVoice && currentLang !== 'en') {
+          selectedVoice = voices.find(v => 
+            v.lang.includes('IN') || 
+            v.name.toLowerCase().includes('indian') ||
+            v.name.toLowerCase().includes('india')
+          );
+        }
+        
+        // Tertiary search: any English voice as fallback
+        if (!selectedVoice) {
+          selectedVoice = voices.find(v => v.lang.startsWith('en'));
+        }
+        
+        // Final fallback: first available voice
+        if (!selectedVoice && voices.length > 0) {
+          selectedVoice = voices[0];
+        }
+
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
+          console.log(`🎵 Speaking with: ${selectedVoice.name} (${selectedVoice.lang}) for ${currentLang}`);
+        } else {
+          console.log('⚠️ No voice found, using system default');
+        }
+
+        // Optimize speech parameters based on language
+        if (['hi', 'bn', 'ta', 'te', 'mr', 'gu', 'kn', 'ml', 'pa', 'or', 'as', 'ur', 'ne', 'gom'].includes(currentLang)) {
+          utterance.rate = 0.7; // Slower for Indian languages
+          utterance.pitch = 0.9;
+        } else {
+          utterance.rate = 0.85; // Normal speed for English
+          utterance.pitch = 1.0;
+        }
+        
+        utterance.volume = 1.0; // Maximum volume for clarity
+
+        // Enhanced event handlers
+        utterance.onstart = () => {
+          console.log('🎙️ Speech synthesis started');
+        };
+        
+        utterance.onend = () => {
+          console.log('✅ Speech synthesis completed');
+        };
+        
+        utterance.onerror = (event) => {
+          console.error('❌ Speech synthesis error:', event.error);
+          // Try again with default voice if there was an error
+          if (event.error === 'voice-unavailable' || event.error === 'synthesis-unavailable') {
+            setTimeout(() => {
+              const fallbackUtterance = new SpeechSynthesisUtterance(cleanText);
+              fallbackUtterance.rate = 0.8;
+              fallbackUtterance.volume = 1.0;
+              speechSynthesis.speak(fallbackUtterance);
+            }, 1000);
+          }
+        };
+        
+        utterance.onpause = () => console.log('⏸️ Speech paused');
+        utterance.onresume = () => console.log('▶️ Speech resumed');
+
+        speechSynthesis.speak(utterance);
+      };
+
+      // Ensure voices are loaded before speaking
       const voices = speechSynthesis.getVoices();
-      const voice = voices.find(v => 
-        v.lang.startsWith(i18n.language) || 
-        v.lang.startsWith(i18n.language.split('-')[0])
-      );
-
-      if (voice) {
-        utterance.voice = voice;
+      if (voices.length === 0) {
+        console.log('Loading voices...');
+        speechSynthesis.addEventListener('voiceschanged', speakWithVoice, { once: true });
+        // Force voice loading for some browsers
+        speechSynthesis.getVoices();
+      } else {
+        speakWithVoice();
       }
-
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      utterance.volume = 0.8;
-
-      speechSynthesis.speak(utterance);
     } catch (error) {
-      console.error('Speech synthesis error:', error);
+      console.error('Speech synthesis initialization error:', error);
     }
   };
 
@@ -392,9 +534,22 @@ Could you please be more specific about what health information you need?`;
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setVoiceEnabled(!voiceEnabled)}
-                className={`w-8 h-8 p-0 hover:bg-white/20 ${voiceEnabled ? 'text-green-200' : 'text-white/60'}`}
-                title={voiceEnabled ? 'Voice enabled' : 'Voice disabled'}
+                onClick={() => {
+                  const newState = !voiceEnabled;
+                  setVoiceEnabled(newState);
+                  console.log(`🎵 Voice ${newState ? 'enabled' : 'disabled'} for language: ${i18n.language}`);
+                  
+                  // Test voice when enabling
+                  if (newState && 'speechSynthesis' in window) {
+                    const testText = i18n.language === 'hi' ? 'आवाज़ सक्रिय है' : 
+                                   i18n.language === 'bn' ? 'ভয়েস সক্রিয়' :
+                                   i18n.language === 'ta' ? 'குரல் செயலில்' :
+                                   'Voice enabled';
+                    setTimeout(() => speakText(testText), 200);
+                  }
+                }}
+                className={`w-8 h-8 p-0 hover:bg-white/20 transition-colors ${voiceEnabled ? 'text-green-200 animate-pulse' : 'text-white/60'}`}
+                title={voiceEnabled ? `Voice enabled (${i18n.language})` : 'Click to enable voice'}
               >
                 {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               </Button>

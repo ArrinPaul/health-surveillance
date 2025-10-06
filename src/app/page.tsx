@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Activity, Droplet, Bell, Shield, BarChart, Users, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
+import AIChatbot from '@/components/AIChatbot';
+import AISuggestions from '@/components/AISuggestions';
 
 export default function Home() {
   const router = useRouter();
@@ -146,6 +148,52 @@ export default function Home() {
                 <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* AI Features Section */}
+      <section className="py-24 px-6 bg-gradient-to-b from-background to-muted/30">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              AI-Powered Health Intelligence
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Experience the future of healthcare with our advanced AI chatbot and intelligent health suggestions system.
+            </p>
+          </div>
+          
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* AI Chatbot */}
+            <div className="apple-card p-8">
+              <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                  <Activity className="w-5 h-5 text-white" />
+                </div>
+                AI Health Assistant
+              </h3>
+              <p className="text-muted-foreground mb-6">
+                Get instant health advice, symptom analysis, and medical guidance in your preferred language.
+              </p>
+              <div className="h-96 overflow-hidden rounded-xl border">
+                <AIChatbot />
+              </div>
+            </div>
+
+            {/* AI Suggestions */}
+            <div className="apple-card p-8">
+              <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
+                  <BarChart className="w-5 h-5 text-white" />
+                </div>
+                Smart Health Insights
+              </h3>
+              <p className="text-muted-foreground mb-6">
+                Personalized health recommendations and preventive care suggestions based on AI analysis.
+              </p>
+              <AISuggestions />
+            </div>
           </div>
         </div>
       </section>
