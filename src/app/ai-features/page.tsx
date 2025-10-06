@@ -40,7 +40,7 @@ export default function AIFeaturesPage() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/ai/analyze-symptoms', {
+      const response = await fetch('/api/ai/analyze-symptoms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ symptoms: symptoms.split(',').map(s => s.trim()) })
@@ -74,7 +74,7 @@ export default function AIFeaturesPage() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/ai/health-query', {
+      const response = await fetch('/api/ai/health-query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: healthQuery, location })
@@ -106,7 +106,7 @@ export default function AIFeaturesPage() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/predict', {
+      const response = await fetch('/api/predict', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -148,7 +148,7 @@ export default function AIFeaturesPage() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/health-forecast', {
+      const response = await fetch('/api/health-forecast', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -509,7 +509,7 @@ export default function AIFeaturesPage() {
                 Clear Results
               </Button>
               <Button 
-                onClick={() => window.open('http://localhost:5000/api-docs', '_blank')} 
+                onClick={() => window.open('/api/docs', '_blank')} 
                 variant="outline" 
                 className="h-20 flex-col"
               >

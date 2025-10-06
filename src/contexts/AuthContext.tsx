@@ -37,50 +37,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string): Promise<User> => {
     try {
-      // Call backend login API to get user with their stored role
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Login failed');
+      // For demo purposes, use mock authentication
+      // In production, this would call your serverless auth API
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Simple validation - accept any email with @ symbol and any password
+      if (email.includes('@') && password.length > 0) {
+        const mockUser: User = {
+          id: Math.random().toString(36).substr(2, 9),
+          name: email.split('@')[0] || 'Demo User',
+          email: email,
+          role: email.includes('admin') ? 'admin' : email.includes('health') ? 'health-worker' : 'community-user',
+          location: 'Demo Location'
+        };
+        
+        setUser(mockUser);
+        setIsAuthenticated(true);
+        localStorage.setItem('user', JSON.stringify(mockUser));
+        localStorage.setItem('token', 'mock-token-' + Date.now());
+        
+        return mockUser;
+      } else {
+        throw new Error('Invalid credentials');
       }
-
-      const userData = await response.json();
-      const user: User = userData.user;
-      
-      setUser(user);
-      setIsAuthenticated(true);
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', userData.token);
-      
-      return user;
     } catch (error) {
-      // Fallback to mock data for development
-      console.log('Using mock login data');
-      
-      // Mock users with different roles based on email
-      let role: UserRole = 'community-user';
-      if (email.includes('admin')) role = 'admin';
-      else if (email.includes('health') || email.includes('worker')) role = 'health-worker';
-      
-      const mockUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: email.split('@')[0],
-        email,
-        role,
-        location: 'Guwahati, Assam'
-      };
-      
-      setUser(mockUser);
-      setIsAuthenticated(true);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      
-      return mockUser;
+      console.error('Login error:', error);
+      throw error;
     }
   };
 

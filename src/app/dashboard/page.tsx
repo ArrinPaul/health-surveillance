@@ -1,195 +1,242 @@
-"use client";
+﻿"use client";
 
-import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Activity, AlertTriangle, Droplet, TrendingUp } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import AISuggestions from '@/components/AISuggestions';
-
-const DiseaseMap = dynamic(() => import('@/components/DiseaseMap'), { ssr: false });
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function DashboardPage() {
-  const { t } = useTranslation();
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    {
-      title: t('activeCases'),
-      value: '132',
-      change: '+12%',
-      icon: Activity,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100 dark:bg-blue-900/30'
-    },
-    {
-      title: 'AI Predictions',
-      value: '94.7%',
-      change: 'Accurate',
-      icon: AlertTriangle,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100 dark:bg-purple-900/30'
-    },
-    {
-      title: t('waterQualityAlerts'),
-      value: '8',
-      change: '-2',
-      icon: Droplet,
-      color: 'text-red-600',
-      bgColor: 'bg-red-100 dark:bg-red-900/30'
-    },
-    {
-      title: 'AI Insights Today',
-      value: '247',
-      change: '+28%',
-      icon: TrendingUp,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100 dark:bg-green-900/30'
+  useEffect(() => {
+    // Check for user session
+    const session = localStorage.getItem("userSession");
+    if (session) {
+      setUser(JSON.parse(session));
+    } else {
+      router.push("/login");
     }
-  ];
+    setLoading(false);
+  }, [router]);
 
-  const casesTrendData = [
-    { month: 'Jan', cases: 45, predictions: 48 },
-    { month: 'Feb', cases: 52, predictions: 55 },
-    { month: 'Mar', cases: 48, predictions: 50 },
-    { month: 'Apr', cases: 61, predictions: 65 },
-    { month: 'May', cases: 75, predictions: 80 },
-    { month: 'Jun', cases: 88, predictions: 95 },
-    { month: 'Jul', cases: 132, predictions: 140 }
-  ];
+  const handleLogout = () => {
+    localStorage.removeItem("userSession");
+    router.push("/");
+  };
 
-  const waterQualityData = [
-    { month: 'Jan', pH: 7.2, turbidity: 3.5 },
-    { month: 'Feb', pH: 7.1, turbidity: 4.2 },
-    { month: 'Mar', pH: 6.9, turbidity: 5.1 },
-    { month: 'Apr', pH: 7.0, turbidity: 4.8 },
-    { month: 'May', pH: 6.8, turbidity: 6.2 },
-    { month: 'Jun', pH: 6.7, turbidity: 7.5 },
-    { month: 'Jul', pH: 6.9, turbidity: 6.8 }
-  ];
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
 
-  const diseaseDistribution = [
-    { name: 'Waterborne', value: 45, color: '#3b82f6' },
-    { name: 'Vector-borne', value: 35, color: '#10b981' },
-    { name: 'Respiratory', value: 30, color: '#f59e0b' },
-    { name: 'Others', value: 22, color: '#8b5cf6' }
-  ];
+  if (!user) {
+    return null;
+  }
 
   return (
-    <ProtectedRoute allowedRoles={['admin', 'health-worker']}>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">{t('dashboard')}</h1>
-          <p className="text-muted-foreground mt-2">
-            Monitor health surveillance and early warning indicators
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <h1 className="text-3xl font-bold text-gray-900">Health Surveillance Dashboard</h1>
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-600">Welcome, {user.name}</span>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
+      </header>
 
-        {/* AI-Powered Suggestions */}
-        <AISuggestions />
-
-        {/* Stats Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat, index) => (
-            <Card key={index} className="backdrop-blur-xl bg-card/50">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {stat.title}
-                </CardTitle>
-                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                  <stat.icon className={`w-5 h-5 ${stat.color}`} />
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div className="px-4 py-6 sm:px-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">H</span>
+                    </div>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">
+                        Health Data
+                      </dt>
+                      <dd className="text-lg font-medium text-gray-900">
+                        Monitor Your Health
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{stat.value}</div>
-                <p className={`text-sm mt-1 ${stat.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
-                  {stat.change} from last month
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+              <div className="bg-gray-50 px-5 py-3">
+                <div className="text-sm">
+                  <Link href="/health-data" className="font-medium text-blue-600 hover:text-blue-500">
+                    View details
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">W</span>
+                    </div>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">
+                        Water Quality
+                      </dt>
+                      <dd className="text-lg font-medium text-gray-900">
+                        Check Water Status
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-5 py-3">
+                <div className="text-sm">
+                  <Link href="/water-quality" className="font-medium text-green-600 hover:text-green-500">
+                    View details
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">A</span>
+                    </div>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">
+                        Alerts
+                      </dt>
+                      <dd className="text-lg font-medium text-gray-900">
+                        Health Alerts
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-5 py-3">
+                <div className="text-sm">
+                  <Link href="/alerts" className="font-medium text-yellow-600 hover:text-yellow-500">
+                    View details
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">AI</span>
+                    </div>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">
+                        AI Features
+                      </dt>
+                      <dd className="text-lg font-medium text-gray-900">
+                        Smart Analysis
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-5 py-3">
+                <div className="text-sm">
+                  <Link href="/ai-features" className="font-medium text-purple-600 hover:text-purple-500">
+                    View details
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">C</span>
+                    </div>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">
+                        Community Reports
+                      </dt>
+                      <dd className="text-lg font-medium text-gray-900">
+                        Community Health
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-5 py-3">
+                <div className="text-sm">
+                  <Link href="/community-reports" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    View details
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">E</span>
+                    </div>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">
+                        Education
+                      </dt>
+                      <dd className="text-lg font-medium text-gray-900">
+                        Health Education
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-5 py-3">
+                <div className="text-sm">
+                  <Link href="/education" className="font-medium text-red-600 hover:text-red-500">
+                    View details
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
-
-        {/* Map and Disease Distribution */}
-        <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="lg:col-span-2 backdrop-blur-xl bg-card/50">
-            <CardHeader>
-              <CardTitle>{t('diseaseHotspots')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DiseaseMap />
-            </CardContent>
-          </Card>
-
-          <Card className="backdrop-blur-xl bg-card/50">
-            <CardHeader>
-              <CardTitle>Disease Distribution</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={diseaseDistribution}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }: any) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {diseaseDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Charts */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Card className="backdrop-blur-xl bg-card/50">
-            <CardHeader>
-              <CardTitle>{t('casesTrend')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={casesTrendData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="cases" stroke="#3b82f6" strokeWidth={2} name="Actual Cases" />
-                  <Line type="monotone" dataKey="predictions" stroke="#10b981" strokeWidth={2} strokeDasharray="5 5" name="Predicted" />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          <Card className="backdrop-blur-xl bg-card/50">
-            <CardHeader>
-              <CardTitle>{t('waterQualityTrend')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={waterQualityData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="pH" fill="#3b82f6" name="pH Level" />
-                  <Bar dataKey="turbidity" fill="#f59e0b" name="Turbidity (NTU)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </ProtectedRoute>
+      </main>
+    </div>
   );
 }

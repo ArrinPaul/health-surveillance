@@ -1,220 +1,158 @@
-"use client";
+﻿"use client";
 
-import { useState } from 'react';
-import { useAuth, UserRole } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Link from 'next/link';
-import { Shield, Stethoscope, Users, ArrowRight } from 'lucide-react';
-import ThemeToggle from '@/components/ThemeToggle';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RegisterPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('community-user');
-  const [location, setLocation] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
   const router = useRouter();
-  const { t } = useTranslation();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleRegister = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      alert('Passwords do not match');
-      return;
-    }
     setLoading(true);
+    setError("");
+
     try {
-      await register(name, email, password, role, location);
-      
-      // Role-based redirect
-      if (role === 'admin' || role === 'health-worker') {
-        router.push('/dashboard');
-      } else if (role === 'community-user') {
-        router.push('/education');
+      if (formData.password !== formData.confirmPassword) {
+        setError("Passwords do not match");
+        return;
       }
-    } catch (error) {
-      console.error('Registration failed:', error);
+
+      if (formData.name && formData.email && formData.password) {
+        // Store user session
+        localStorage.setItem("userSession", JSON.stringify({
+          id: "1",
+          email: formData.email,
+          name: formData.name,
+          role: "user"
+        }));
+
+        router.push("/dashboard");
+      } else {
+        setError("Please fill in all fields");
+      }
+    } catch (err) {
+      setError("Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-background relative">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
-      
-      {/* Theme toggle */}
-      <div className="absolute top-6 right-6">
-        <ThemeToggle />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Sign Up</h1>
+          <p className="text-gray-600 mt-2">Create your health surveillance account</p>
+        </div>
 
-      <div className="w-full max-w-md relative z-10 animate-fade-in-up">
-        <div className="text-center mb-12">
-          <Link href="/" className="inline-block mb-4">
-            <h1 className="text-3xl font-semibold tracking-tight">
-              Health Surveillance
-            </h1>
-          </Link>
-          <p className="text-xl text-muted-foreground">
-            Create your account
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your full name"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Confirm your password"
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="text-red-600 text-sm text-center">{error}</div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {loading ? "Creating Account..." : "Sign Up"}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <Link href="/login" className="text-blue-600 hover:text-blue-700">
+              Sign in
+            </Link>
           </p>
         </div>
 
-        <div className="apple-card p-8 space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <Label htmlFor="name" className="text-sm font-medium">
-                {t('name')}
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="mt-2 h-11 rounded-xl"
-                placeholder="Your full name"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="email" className="text-sm font-medium">
-                {t('email')}
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="mt-2 h-11 rounded-xl"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="password" className="text-sm font-medium">
-                {t('password')}
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="mt-2 h-11 rounded-xl"
-                placeholder="••••••••"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="confirmPassword" className="text-sm font-medium">
-                {t('confirmPassword')}
-              </Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="mt-2 h-11 rounded-xl"
-                placeholder="••••••••"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="role" className="text-sm font-medium">
-                {t('role')}
-              </Label>
-              <Select value={role} onValueChange={(value) => setRole(value as UserRole)}>
-                <SelectTrigger className="mt-2 h-11 rounded-xl">
-                  <SelectValue placeholder={t('selectRole')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">
-                    <div className="flex items-center gap-2">
-                      <Shield className="w-4 h-4" />
-                      {t('admin')}
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="health-worker">
-                    <div className="flex items-center gap-2">
-                      <Stethoscope className="w-4 h-4" />
-                      {t('healthWorker')}
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="community-user">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      {t('communityUser')}
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="location" className="text-sm font-medium">
-                {t('location')}
-              </Label>
-              <Input
-                id="location"
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                required
-                className="mt-2 h-11 rounded-xl"
-                placeholder="City, State"
-              />
-            </div>
-
-            <Button 
-              type="submit" 
-              className="w-full h-11 rounded-full text-base font-medium shadow-lg shadow-primary/20" 
-              disabled={loading}
-            >
-              {loading ? t('loading') : (
-                <span className="flex items-center gap-2">
-                  {t('signUp')}
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              )}
-            </Button>
-          </form>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border/40" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-card px-4 text-muted-foreground">
-                Already have an account?
-              </span>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <Link 
-              href="/login" 
-              className="text-primary hover:text-primary/80 font-medium transition-colors text-sm"
-            >
-              Sign in instead
-            </Link>
-          </div>
+        <div className="mt-4 text-center">
+          <Link href="/" className="text-sm text-blue-600 hover:text-blue-700">
+            Back to Home
+          </Link>
         </div>
-
-        <p className="text-center text-xs text-muted-foreground mt-8">
-          By continuing, you agree to our Terms of Service and Privacy Policy
-        </p>
       </div>
     </div>
   );

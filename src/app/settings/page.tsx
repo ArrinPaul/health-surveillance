@@ -1,7 +1,7 @@
 "use client";
 
-import { useSettings } from '@/contexts/SettingsContext';
-import { useTranslation } from 'react-i18next';
+import { useSettings } from '@/components/ClientProviders';
+import { useTranslation } from '@/lib/simple-i18n';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -102,14 +102,17 @@ export default function SettingsPage() {
                   Adjust text size for better readability
                 </p>
               </div>
-              <Select value={fontSize} onValueChange={(value: any) => setFontSize(value)}>
+              <Select 
+                value={fontSize.toString()} 
+                onValueChange={(value: string) => setFontSize(parseInt(value))}
+              >
                 <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="small">Small</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="large">Large</SelectItem>
+                  <SelectItem value="14">Small</SelectItem>
+                  <SelectItem value="16">Medium</SelectItem>
+                  <SelectItem value="18">Large</SelectItem>
                 </SelectContent>
               </Select>
             </div>

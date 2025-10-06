@@ -1,141 +1,118 @@
-"use client";
+﻿"use client";
 
-import React from 'react';
-// @ts-ignore - React 19 compatibility issue
-const { useState } = React;
-import { useAuth, UserRole } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Link from 'next/link';
-import { Shield, Stethoscope, Users, ArrowRight } from 'lucide-react';
-import ThemeToggle from '@/components/ThemeToggle';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const router = useRouter();
-  const { t } = useTranslation();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = async (e: any) => {
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+
     try {
-      // Login without specifying role - backend will determine user's role from signup data
-      const userData = await login(email, password);
-      
-      // Role-based redirect based on user's stored role
-      if (userData.role === 'admin' || userData.role === 'health-worker') {
-        router.push('/dashboard');
-      } else if (userData.role === 'community-user') {
-        router.push('/education');
+      if (formData.email && formData.password) {
+        localStorage.setItem("userSession", JSON.stringify({
+          id: "1",
+          email: formData.email,
+          name: formData.email.split("@")[0],
+          role: "user"
+        }));
+
+        router.push("/dashboard");
+      } else {
+        setError("Please fill in all fields");
       }
-    } catch (error) {
-      console.error('Login failed:', error);
+    } catch (err) {
+      setError("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-background relative">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
-      
-      {/* Theme toggle */}
-      <div className="absolute top-6 right-6">
-        <ThemeToggle />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Login</h1>
+          <p className="text-gray-600 mt-2">Access your health surveillance dashboard</p>
+        </div>
 
-      <div className="w-full max-w-md relative z-10 animate-fade-in-up">
-        <div className="text-center mb-12">
-          <Link href="/" className="inline-block mb-4">
-            <h1 className="text-3xl font-semibold tracking-tight">
-              Health Surveillance
-            </h1>
-          </Link>
-          <p className="text-xl text-muted-foreground">
-            Sign in to continue
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="text-red-600 text-sm text-center">{error}</div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Don't have an account?{" "}
+            <Link href="/register" className="text-blue-600 hover:text-blue-700">
+              Sign up
+            </Link>
           </p>
         </div>
 
-        <div className="apple-card p-8 space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <Label htmlFor="email" className="text-sm font-medium">
-                {t('email')}
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e: any) => setEmail(e.target.value)}
-                required
-                className="mt-2 h-11 rounded-xl"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="password" className="text-sm font-medium">
-                {t('password')}
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e: any) => setPassword(e.target.value)}
-                required
-                className="mt-2 h-11 rounded-xl"
-                placeholder="••••••••"
-              />
-            </div>
-
-
-
-            <Button 
-              type="submit" 
-              className="w-full h-11 rounded-full text-base font-medium shadow-lg shadow-primary/20" 
-              disabled={loading}
-            >
-              {loading ? t('loading') : (
-                <span className="flex items-center gap-2">
-                  {t('signIn')}
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              )}
-            </Button>
-          </form>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border/40" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-card px-4 text-muted-foreground">
-                New to Health Surveillance?
-              </span>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <Link 
-              href="/register" 
-              className="text-primary hover:text-primary/80 font-medium transition-colors text-sm"
-            >
-              Create an account
-            </Link>
-          </div>
+        <div className="mt-4 text-center">
+          <Link href="/" className="text-sm text-blue-600 hover:text-blue-700">
+            Back to Home
+          </Link>
         </div>
-
-        <p className="text-center text-xs text-muted-foreground mt-8">
-          By continuing, you agree to our Terms of Service and Privacy Policy
-        </p>
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 "use client";
 
-import { useAuth, UserRole } from '@/contexts/AuthContext';
+import { useAuth } from '@/components/ClientProviders';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+
+type UserRole = 'admin' | 'health-worker' | 'community-user';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

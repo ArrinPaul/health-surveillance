@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/lib/simple-i18n';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,7 +47,7 @@ export default function WaterQualityPage() {
       }
 
       // Call the real backend API
-      const response = await fetch(`http://localhost:5000/api/water-quality?lat=${lat}&lon=${lng}`);
+      const response = await fetch(`/api/water-quality?lat=${lat}&lon=${lng}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch water quality data');
@@ -58,7 +58,7 @@ export default function WaterQualityPage() {
       // Get AI analysis from Gemini
       let aiAnalysis = [];
       try {
-        const aiResponse = await fetch('http://localhost:5000/water-quality/analyze', {
+        const aiResponse = await fetch('/api/water-quality/analyze', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/components/ClientProviders';
+import { useTranslation } from '@/lib/simple-i18n';
 import { 
   LayoutDashboard, 
   FileText, 
