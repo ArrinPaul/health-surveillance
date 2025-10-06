@@ -173,9 +173,6 @@ const LanguageSelector: React.FC = () => {
       flag: '🇳🇵',
       voiceSupported: true,
       region: 'Nepal/India'
-      flag: '🇫🇷',
-      voiceSupported: true,
-      region: 'FR'
     },
     {
       code: 'ar',

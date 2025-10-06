@@ -42,6 +42,19 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <ErrorReporter />
+        {/* Disable service worker in development */}
+        <Script id="disable-service-worker" strategy="afterInteractive">
+          {`
+            if ('serviceWorker' in navigator && ${process.env.NODE_ENV === 'production'}) {
+              navigator.serviceWorker.register('/sw.js');
+            } else if ('serviceWorker' in navigator) {
+              // Unregister service worker in development
+              navigator.serviceWorker.getRegistrations().then(registrations => {
+                registrations.forEach(registration => registration.unregister());
+              });
+            }
+          `}
+        </Script>
         <Script id="suppress-resize-observer" strategy="beforeInteractive">
           {`
             // Suppress benign ResizeObserver error (common with Radix UI/shadcn)
@@ -72,7 +85,8 @@ export default function RootLayout({
             })();
           `}
         </Script>
-        <Script id="register-sw" strategy="afterInteractive">
+        {/* Service Worker temporarily disabled to fix offline detection issues */}
+        {/*<Script id="register-sw" strategy="afterInteractive">
           {`
             if ('serviceWorker' in navigator) {
               window.addEventListener('load', () => {
@@ -82,7 +96,7 @@ export default function RootLayout({
               });
             }
           `}
-        </Script>
+        </Script>*/}
         <ClientProviders>
           {children}
         </ClientProviders>
