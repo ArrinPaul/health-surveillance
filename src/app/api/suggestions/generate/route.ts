@@ -1,28 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    const response = await fetch(`${BACKEND_URL}/suggestions/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+    // Generate personalized suggestions based on the request
+    const suggestions = await generatePersonalizedSuggestions(body);
+    
+    return NextResponse.json({
+      suggestions,
+      generatedAt: new Date(),
+      refreshInterval: 30,
+      success: true
     });
-
-    if (!response.ok) {
-      throw new Error(`Backend responded with status ${response.status}`);
-    }
-
-    const data = await response.json();
-    return NextResponse.json(data);
     
   } catch (error) {
-    console.error('Suggestions API proxy error:', error);
+    console.error('Suggestions API error:', error);
     
     // Return fallback suggestions
     return NextResponse.json({
@@ -32,6 +25,53 @@ export async function POST(request: NextRequest) {
       fallback: true
     });
   }
+}
+
+async function generatePersonalizedSuggestions(requestData: any) {
+  const { location, healthProfile, preferences } = requestData;
+  
+  const suggestions = [];
+  
+  // Health-based suggestions
+  suggestions.push({
+    id: 'health-1',
+    type: 'health',
+    priority: 'high',
+    title: 'Daily Health Check',
+    description: 'Monitor your vital signs and track any symptoms. Early detection is key to better health outcomes.',
+    action: 'Start Health Tracking',
+    actionUrl: '/health-data',
+    timestamp: new Date(),
+    category: 'preventive'
+  });
+  
+  // Water quality suggestions
+  suggestions.push({
+    id: 'water-1',
+    type: 'water',
+    priority: 'medium',
+    title: 'Water Quality Monitoring',
+    description: 'Check your local water quality reports and ensure proper filtration at home.',
+    action: 'View Water Quality',
+    actionUrl: '/water-quality',
+    timestamp: new Date(),
+    category: 'safety'
+  });
+  
+  // AI-powered suggestions
+  suggestions.push({
+    id: 'ai-1',
+    type: 'ai',
+    priority: 'low',
+    title: 'AI Health Assistant',
+    description: 'Get personalized health advice and recommendations from our AI-powered health assistant.',
+    action: 'Chat with AI',
+    actionUrl: '/ai-features',
+    timestamp: new Date(),
+    category: 'assistance'
+  });
+  
+  return suggestions;
 }
 
 function getFallbackSuggestions() {

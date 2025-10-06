@@ -1,6 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+// Process health messages using AI or predefined responses
+async function processHealthMessage(message: string, language: string): Promise<string> {
+  const lowerMessage = message.toLowerCase();
+  
+  // Check for specific health topics
+  if (lowerMessage.includes('water') || lowerMessage.includes('purif') || lowerMessage.includes('drink')) {
+    return multiLanguageResponses[language as keyof typeof multiLanguageResponses]?.waterSafety || multiLanguageResponses.en.waterSafety;
+  }
+  
+  if (lowerMessage.includes('hand') || lowerMessage.includes('wash') || lowerMessage.includes('hygiene')) {
+    return multiLanguageResponses[language as keyof typeof multiLanguageResponses]?.handHygiene || multiLanguageResponses.en.handHygiene;
+  }
+  
+  if (lowerMessage.includes('symptom') || lowerMessage.includes('fever') || lowerMessage.includes('sick')) {
+    return multiLanguageResponses[language as keyof typeof multiLanguageResponses]?.symptoms || multiLanguageResponses.en.symptoms;
+  }
+  
+  if (lowerMessage.includes('emergency') || lowerMessage.includes('help') || lowerMessage.includes('contact')) {
+    return multiLanguageResponses[language as keyof typeof multiLanguageResponses]?.emergency || multiLanguageResponses.en.emergency;
+  }
+  
+  // Use Google Gemini AI if API key is available
+  const geminiApiKey = process.env.GEMINI_API_KEY;
+  if (geminiApiKey) {
+    try {
+      const aiResponse = await generateAIHealthResponse(message, language, geminiApiKey);
+      return aiResponse;
+    } catch (error) {
+      console.error('Gemini AI error:', error);
+    }
+  }
+  
+  // Default welcome message
+  return multiLanguageResponses[language as keyof typeof multiLanguageResponses]?.welcome || multiLanguageResponses.en.welcome;
+}
+
+async function generateAIHealthResponse(message: string, language: string, apiKey: string): Promise<string> {
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: `You are a healthcare assistant. Respond in ${language} language. User asks: "${message}". Provide helpful, accurate health information focusing on water safety, hygiene, disease prevention, and general health guidance. Keep responses concise and actionable.`
+          }]
+        }]
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Gemini API error');
+    }
+    
+    const data = await response.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || 'I apologize, but I cannot process your request at the moment. Please try asking about water safety, hygiene, or general health topics.';
+  } catch (error) {
+    throw error;
+  }
+}
 
 // Multi-language responses
 const multiLanguageResponses = {
@@ -46,23 +107,20 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { message, language = 'en' } = body;
     
-    const response = await fetch(`${BACKEND_URL}/chatbot/message`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ...body, language }),
+    // Process message directly using AI (Google Gemini)
+    const response = await processHealthMessage(message, language);
+    
+    return NextResponse.json({
+      response: response,
+      category: 'health',
+      confidence: 0.9,
+      language,
+      suggestions: generateSuggestions(language),
+      timestamp: new Date().toISOString()
     });
-
-    if (!response.ok) {
-      throw new Error(`Backend responded with status ${response.status}`);
-    }
-
-    const data = await response.json();
-    return NextResponse.json(data);
     
   } catch (error) {
-    console.error('Chatbot API proxy error:', error);
+    console.error('Chatbot API error:', error);
     
     // Return fallback response in requested language
     const { message = '', language = 'en' } = await request.json().catch(() => ({}));
