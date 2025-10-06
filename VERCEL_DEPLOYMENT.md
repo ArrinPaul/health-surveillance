@@ -1,8 +1,8 @@
-# 🚀 Vercel Deployment Guide for Health Surveillance System
+# Vercel Deployment Guide for Health Surveillance System
 
 This application is now fully configured for **serverless deployment** on Vercel. No backend server required!
 
-## ✅ Pre-Deployment Checklist
+##  Pre-Deployment Checklist
 
 ### 1. **Environment Variables Setup**
 Copy all environment variables from your local `.env` file to Vercel:
@@ -23,7 +23,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 npm install -g vercel
 ```
 
-## 🚀 Deployment Steps
+## Deployment Steps
 
 ### **Option A: Deploy via Vercel CLI (Recommended)**
 
@@ -57,7 +57,7 @@ git push origin main
    - Configure environment variables
    - Deploy
 
-## ⚙️ Environment Variables in Vercel Dashboard
+## Environment Variables in Vercel Dashboard
 
 Go to your project settings in Vercel and add these environment variables:
 
@@ -71,31 +71,31 @@ Go to your project settings in Vercel and add these environment variables:
 | `NODE_ENV` | `production` | Environment type |
 | `NEXT_PUBLIC_APP_URL` | `https://your-app.vercel.app` | Your app URL |
 
-## 🏗️ What's Been Converted to Serverless
+##  What's Been Converted to Serverless
 
-### ✅ **API Routes Created** (No backend server needed)
+###  **API Routes Created** (No backend server needed)
 - `/api/health` - Health check endpoint
 - `/api/chatbot/message` - Multilingual AI chatbot
 - `/api/water-quality` - Water quality monitoring
 - `/api/predict` - AI predictions and analytics
 - `/api/suggestions/generate` - Smart health suggestions
 
-### ✅ **Features Now Serverless**
-- 🤖 **AI Chatbot** - Multilingual health assistant
-- 💧 **Water Quality Monitoring** - Real-time data simulation
-- 📊 **Health Analytics** - Disease outbreak predictions
-- 🔔 **Smart Alerts** - Automated health notifications
-- 🌐 **15 Languages** - Complete i18n support
-- 🎵 **Voice Synthesis** - Audio responses in native languages
+###  **Features Now Serverless**
+-  **AI Chatbot** - Multilingual health assistant
+-  **Water Quality Monitoring** - Real-time data simulation
+-  **Health Analytics** - Disease outbreak predictions
+-  **Smart Alerts** - Automated health notifications
+-  **15 Languages** - Complete i18n support
+-  **Voice Synthesis** - Audio responses in native languages
 
-### ✅ **Performance Optimizations**
+###  **Performance Optimizations**
 - Image optimization with WebP/AVIF
 - Console log removal in production
 - Optimized bundle sizes
 - CDN caching
 - Automatic scaling
 
-## 🌍 Post-Deployment
+##  Post-Deployment
 
 ### **1. Test Your Deployment**
 ```bash
@@ -116,7 +116,7 @@ The app automatically uses relative URLs (`/api/*`) so it will work on Vercel wi
 - Monitor function execution times
 - Track error rates
 
-## 💡 **Key Benefits of Serverless Deployment**
+##  **Key Benefits of Serverless Deployment**
 
 ✅ **No Backend Server Required** - Everything runs on Vercel's edge network
 ✅ **Auto-Scaling** - Handles traffic spikes automatically  
@@ -126,7 +126,7 @@ The app automatically uses relative URLs (`/api/*`) so it will work on Vercel wi
 ✅ **Built-in SSL** - HTTPS out of the box
 ✅ **Instant Deployments** - Deploy in seconds
 
-## 🔧 **Troubleshooting**
+##  **Troubleshooting**
 
 ### Environment Variables Not Working?
 - Double-check variable names (case-sensitive)
@@ -145,20 +145,20 @@ npm run build
 npm run start
 ```
 
-## 📱 **Your Deployed Application**
+##  **Your Deployed Application**
 
 Once deployed, your Health Surveillance System will be available at:
 `https://your-project-name.vercel.app`
 
 **Features Available:**
-- 🏠 **Homepage** - AI features integrated directly
-- 🤖 **AI Chatbot** - Multilingual health assistant with voice
-- 📊 **Dashboard** - Real-time health analytics
-- 💧 **Water Quality** - Monitoring and alerts
-- 🌐 **15 Languages** - Complete localization
-- 📱 **Mobile Responsive** - Works on all devices
+-  **Homepage** - AI features integrated directly
+-  **AI Chatbot** - Multilingual health assistant with voice
+-  **Dashboard** - Real-time health analytics
+-  **Water Quality** - Monitoring and alerts
+-  **15 Languages** - Complete localization
+-  **Mobile Responsive** - Works on all devices
 
-## 🎉 **Congratulations!**
+##  **Congratulations!**
 
 Your Health Surveillance System is now running serverless on Vercel with:
 - ✅ Zero server maintenance
@@ -168,4 +168,4 @@ Your Health Surveillance System is now running serverless on Vercel with:
 - ✅ 15-language support
 - ✅ Voice-enabled AI chatbot
 
-**No need to keep your laptop running - everything is in the cloud!** 🌤️
+**No need to keep your laptop running - everything is in the cloud!** 
