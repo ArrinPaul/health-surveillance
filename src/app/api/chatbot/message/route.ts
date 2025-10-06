@@ -21,19 +21,20 @@ async function processHealthMessage(message: string, language: string): Promise<
     return multiLanguageResponses[language as keyof typeof multiLanguageResponses]?.emergency || multiLanguageResponses.en.emergency;
   }
   
-  // Use Google Gemini AI if API key is available
-  const geminiApiKey = process.env.GEMINI_API_KEY;
-  if (geminiApiKey && geminiApiKey !== 'your_gemini_api_key') {
-    try {
-      const aiResponse = await generateAIHealthResponse(message, language, geminiApiKey);
-      if (aiResponse && !aiResponse.includes('I apologize, but I cannot process')) {
-        return aiResponse;
-      }
-    } catch (error) {
-      console.error('Gemini AI error:', error);
-      // Continue to fallback response
-    }
-  }
+  // Temporarily disable Gemini API to resolve SSL issues in serverless environment
+  // Will re-enable once SSL certificates are properly configured
+  // const geminiApiKey = process.env.GEMINI_API_KEY;
+  // if (geminiApiKey && geminiApiKey !== 'your_gemini_api_key') {
+  //   try {
+  //     const aiResponse = await generateAIHealthResponse(message, language, geminiApiKey);
+  //     if (aiResponse && !aiResponse.includes('I apologize, but I cannot process')) {
+  //       return aiResponse;
+  //     }
+  //   } catch (error) {
+  //     console.error('Gemini AI error:', error);
+  //     // Continue to fallback response
+  //   }
+  // }
   
   // Default welcome message
   return multiLanguageResponses[language as keyof typeof multiLanguageResponses]?.welcome || multiLanguageResponses.en.welcome;
