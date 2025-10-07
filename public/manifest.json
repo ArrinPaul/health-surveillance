@@ -3,6 +3,7 @@
   "short_name": "Health Surveillance",
   "description": "Early Warning System for Disease Monitoring and Water Quality Tracking",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",

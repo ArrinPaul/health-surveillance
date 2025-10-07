@@ -1,24 +1,44 @@
-# Health Surveillance System
+# Health Surveillance# Health Surveillance System
 
-A comprehensive web-based health surveillance system designed for monitoring water quality, disease outbreaks, and community health in India. The system supports 15 Indian languages and includes AI-powered features for health assistance and recommendations.
 
-## Features
 
-### Core Features
-- **Real-time Health Monitoring** - Track disease outbreaks and health incidents
-- **Water Quality Analysis** - Monitor water sources with environmental data
-- **AI-Powered Insights** - Gemini AI for health analysis and recommendations
+This project is designed to monitor and analyze health-related data to provide insights and alerts for better decision-making. It leverages modern web technologies and data analysis tools to deliver a comprehensive solution for health surveillance.A comprehensive web-based health surveillance system designed for monitoring water quality, disease outbreaks, and community health in India. The system supports 15 Indian languages and includes AI-powered features for health assistance and recommendations.
+
+
+
+## Key Features## Features
+
+- Real-time health data monitoring
+
+- AI-powered analytics and predictions### Core Features
+
+- Community-driven reporting- **Real-time Health Monitoring** - Track disease outbreaks and health incidents
+
+- Multi-language support- **Water Quality Analysis** - Monitor water sources with environmental data
+
+- Secure and scalable architecture- **AI-Powered Insights** - Gemini AI for health analysis and recommendations
+
 - **Interactive Maps** - OpenStreetMap integration for geographic visualization
-- **Weather Integration** - Open-Meteo API for climate impact analysis
-- **Multi-user Access** - Role-based authentication for different user types
 
-### AI & ML Capabilities
+## Getting Started- **Weather Integration** - Open-Meteo API for climate impact analysis
+
+1. Clone the repository.- **Multi-user Access** - Role-based authentication for different user types
+
+2. Install dependencies using `npm install`.
+
+3. Run the development server using `npm run dev`.### AI & ML Capabilities
+
 - **Outbreak Prediction** - Early warning systems for epidemic detection
-- **Risk Assessment** - Dynamic health risk calculations
-- **Symptom Analysis** - AI-powered symptom pattern recognition
+
+## Contributing- **Risk Assessment** - Dynamic health risk calculations
+
+Contributions are welcome! Please fork the repository and submit a pull request.- **Symptom Analysis** - AI-powered symptom pattern recognition
+
 - **Health Recommendations** - Personalized prevention advice
-- **Report Summarization** - Automated health report generation
-- **Sentiment Analysis** - Community feedback analysis
+
+## License- **Report Summarization** - Automated health report generation
+
+This project is licensed under the MIT License.- **Sentiment Analysis** - Community feedback analysis
 
 ##  Tech Stack
 

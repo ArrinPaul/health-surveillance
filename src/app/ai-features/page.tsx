@@ -509,7 +509,11 @@ export default function AIFeaturesPage() {
                 Clear Results
               </Button>
               <Button 
-                onClick={() => window.open('http://localhost:5000/api-docs', '_blank')} 
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.open('http://localhost:5000/api-docs', '_blank');
+                  }
+                }} 
                 variant="outline" 
                 className="h-20 flex-col"
               >

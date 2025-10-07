@@ -14,6 +14,8 @@ export default function ErrorReporter({ error, reset }: ReporterProps) {
   const pollRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const inIframe = window.parent !== window;
     if (!inIframe) return;
 
@@ -45,6 +47,7 @@ export default function ErrorReporter({ error, reset }: ReporterProps) {
       });
 
     const pollOverlay = () => {
+      if (typeof document === 'undefined') return;
       const overlay = document.querySelector("[data-nextjs-dialog-overlay]");
       const node =
         overlay?.querySelector(
@@ -74,7 +77,7 @@ export default function ErrorReporter({ error, reset }: ReporterProps) {
 
   /* ─ extra postMessage when on the global-error route ─ */
   useEffect(() => {
-    if (!error) return;
+    if (!error || typeof window === 'undefined') return;
     window.parent.postMessage(
       {
         type: "global-error-reset",
@@ -85,7 +88,7 @@ export default function ErrorReporter({ error, reset }: ReporterProps) {
           name: error.name,
         },
         timestamp: Date.now(),
-        userAgent: navigator.userAgent,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
       },
       "*"
     );

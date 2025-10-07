@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Activity, Droplet, Bell, Shield, BarChart, Users, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
-import AIChatbot from '@/components/AIChatbot';
+// import AIChatbot from '@/components/AIChatbot';
 import AISuggestions from '@/components/AISuggestions';
 
 export default function Home() {
@@ -177,7 +177,7 @@ export default function Home() {
                 Get instant health advice, symptom analysis, and medical guidance in your preferred language.
               </p>
               <div className="h-96 overflow-hidden rounded-xl border">
-                <AIChatbot />
+                {/* <AIChatbot /> */}
               </div>
             </div>
 

@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -27,23 +26,22 @@ import LanguageSelector from './LanguageSelector';
 export default function Navigation() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
-  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const navItems = [
-    { href: '/dashboard', label: t('dashboard'), icon: LayoutDashboard, roles: ['admin', 'health-worker'] },
-    { href: '/health-data', label: t('healthData'), icon: FileText, roles: ['admin', 'health-worker'] },
-    { href: '/water-quality', label: t('waterQuality'), icon: Droplet, roles: ['admin', 'health-worker'] },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'health-worker'] },
+    { href: '/health-data', label: 'Health Data', icon: FileText, roles: ['admin', 'health-worker'] },
+    { href: '/water-quality', label: 'Water Quality', icon: Droplet, roles: ['admin', 'health-worker'] },
     { href: '/ai-features', label: '🤖 AI Features', icon: LayoutDashboard, roles: ['admin', 'health-worker'] },
-    { href: '/alerts', label: t('alerts'), icon: Bell, roles: ['admin', 'health-worker'] },
-    { href: '/education', label: t('education'), icon: BookOpen, roles: ['admin', 'health-worker', 'community-user'] },
-    { href: '/community-reports', label: t('communityReports'), icon: MessageSquare, roles: ['admin', 'health-worker', 'community-user'] },
+    { href: '/alerts', label: 'Alerts', icon: Bell, roles: ['admin', 'health-worker'] },
+    { href: '/education', label: 'Education', icon: BookOpen, roles: ['admin', 'health-worker', 'community-user'] },
+    { href: '/community-reports', label: 'Community Reports', icon: MessageSquare, roles: ['admin', 'health-worker', 'community-user'] },
   ];
 
   const bottomNavItems = [
-    { href: '/profile', label: t('profile'), icon: User },
-    { href: '/settings', label: t('settings'), icon: Settings },
-    { href: '/help', label: t('help'), icon: HelpCircle },
+    { href: '/profile', label: 'Profile', icon: User },
+    { href: '/settings', label: 'Settings', icon: Settings },
+    { href: '/help', label: 'Help', icon: HelpCircle },
   ];
 
   const filteredNavItems = navItems.filter(item => 
@@ -111,7 +109,7 @@ export default function Navigation() {
             className="justify-start gap-3 text-muted-foreground hover:text-foreground hover:bg-accent rounded-xl"
           >
             <LogOut className="w-5 h-5" />
-            <span className="text-[15px]">{t('logout')}</span>
+            <span className="text-[15px]">Logout</span>
           </Button>
         </div>
       </div>

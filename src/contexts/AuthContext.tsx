@@ -27,11 +27,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check localStorage for existing session
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
+    // Check localStorage for existing session (client-side only)
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+        setIsAuthenticated(true);
+      }
     }
   }, []);
 
@@ -55,8 +57,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       setUser(user);
       setIsAuthenticated(true);
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', userData.token);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('token', userData.token);
+      }
       
       return user;
     } catch (error) {
@@ -78,7 +82,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       setUser(mockUser);
       setIsAuthenticated(true);
-      localStorage.setItem('user', JSON.stringify(mockUser));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('user', JSON.stringify(mockUser));
+      }
       
       return mockUser;
     }
@@ -96,13 +102,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     setUser(newUser);
     setIsAuthenticated(true);
-    localStorage.setItem('user', JSON.stringify(newUser));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('user', JSON.stringify(newUser));
+    }
   };
 
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('user');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('user');
+    }
   };
 
   return (

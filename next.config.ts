@@ -40,6 +40,20 @@ const nextConfig: NextConfig = {
           { key: 'Cache-Control', value: 'public, max-age=60, stale-while-revalidate=300' },
         ],
       },
+      {
+        source: '/manifest.json',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+          { key: 'Content-Type', value: 'application/manifest+json' },
+        ],
+      },
+      {
+        source: '/:path*\\.(ico|png|jpg|jpeg|gif|webp|svg|woff|woff2)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400' },
+        ],
+      },
     ];
   },
 };

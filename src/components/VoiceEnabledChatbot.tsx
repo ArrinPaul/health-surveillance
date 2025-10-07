@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed for SSR compatibility
 import { 
   MessageCircle, 
   Send, 
@@ -50,7 +50,9 @@ interface VoiceConfig {
 }
 
 const VoiceEnabledChatbot: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  // const { t, i18n } = useTranslation(); // Removed for SSR compatibility
+  const t = (key: string) => key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+  const i18n = { language: 'en' }; // Mock i18n
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -148,7 +150,7 @@ const VoiceEnabledChatbot: React.FC = () => {
     }
 
     // Initialize Speech Synthesis
-    if ('speechSynthesis' in window) {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       setSpeechSynthesis(window.speechSynthesis);
       
       const loadVoices = () => {

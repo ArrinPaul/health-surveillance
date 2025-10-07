@@ -42,6 +42,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Skip service worker for manifest.json and static assets that should be directly accessible
+  if (event.request.url.includes('/manifest.json') || 
+      event.request.url.includes('/favicon.ico') ||
+      event.request.url.includes('/robots.txt')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {

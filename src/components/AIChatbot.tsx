@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed for SSR compatibility
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,7 +37,9 @@ interface Suggestion {
 }
 
 const AIChatbot: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  // const { t, i18n } = useTranslation(); // Removed for SSR compatibility
+  const t = (key: string) => key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+  const i18n = { language: 'en' }; // Mock i18n
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);

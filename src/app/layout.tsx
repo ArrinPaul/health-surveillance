@@ -37,6 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/favicon.ico" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
@@ -45,9 +46,9 @@ export default function RootLayout({
         {/* Disable service worker in development */}
         <Script id="disable-service-worker" strategy="afterInteractive">
           {`
-            if ('serviceWorker' in navigator && ${process.env.NODE_ENV === 'production'}) {
+            if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && ${process.env.NODE_ENV === 'production'}) {
               navigator.serviceWorker.register('/sw.js');
-            } else if ('serviceWorker' in navigator) {
+            } else if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
               // Unregister service worker in development
               navigator.serviceWorker.getRegistrations().then(registrations => {
                 registrations.forEach(registration => registration.unregister());
@@ -70,18 +71,20 @@ export default function RootLayout({
                 }
               };
               
-              window.addEventListener('error', resizeObserverErrHandler);
-              
-              const originalOnError = window.onerror;
-              window.onerror = function(message, source, lineno, colno, error) {
-                if (message && typeof message === 'string' && message.includes('ResizeObserver')) {
-                  return true;
-                }
-                if (originalOnError) {
-                  return originalOnError(message, source, lineno, colno, error);
-                }
-                return false;
-              };
+              if (typeof window !== 'undefined') {
+                window.addEventListener('error', resizeObserverErrHandler);
+                
+                const originalOnError = window.onerror;
+                window.onerror = function(message, source, lineno, colno, error) {
+                  if (message && typeof message === 'string' && message.includes('ResizeObserver')) {
+                    return true;
+                  }
+                  if (originalOnError) {
+                    return originalOnError(message, source, lineno, colno, error);
+                  }
+                  return false;
+                };
+              }
             })();
           `}
         </Script>

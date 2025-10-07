@@ -1,11 +1,15 @@
-# *
 User-agent: *
 Allow: /
+Allow: /manifest.json
+Allow: /favicon.ico
+Allow: /*.png
+Allow: /*.svg
+Allow: /*.ico
 Disallow: /api/
 Disallow: /admin/
 
 # Host
-Host: http://localhost:3000
+Host: https://health-surveillance-lyqumjrsq-arrinpaul11-6489s-projects.vercel.app
 
 # Sitemaps
-Sitemap: http://localhost:3000/sitemap.xml
+Sitemap: https://health-surveillance-lyqumjrsq-arrinpaul11-6489s-projects.vercel.app/sitemap.xml

@@ -161,7 +161,7 @@ const AISuggestions: React.FC = () => {
   };
 
   const handleAction = (actionUrl?: string) => {
-    if (actionUrl) {
+    if (actionUrl && typeof window !== 'undefined') {
       window.location.href = actionUrl;
     }
   };
@@ -253,7 +253,7 @@ const AISuggestions: React.FC = () => {
                       <div className="flex items-center gap-4 text-xs text-gray-500">
                         <div className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
-                          {suggestion.timestamp.toLocaleTimeString([], { 
+                          {(suggestion.timestamp instanceof Date ? suggestion.timestamp : new Date(suggestion.timestamp)).toLocaleTimeString([], { 
                             hour: '2-digit', 
                             minute: '2-digit' 
                           })}

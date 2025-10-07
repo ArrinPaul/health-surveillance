@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed for SSR compatibility
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import Link from 'next/link';
 import { Shield, Stethoscope, Users, ArrowRight } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
+import PasswordStrengthIndicator from '@/components/ui/PasswordStrengthIndicator';
+import { PasswordInput } from '@/components/ui/PasswordInput';
+import { validatePassword } from '@/lib/passwordValidation';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -22,10 +25,41 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const router = useRouter();
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed for SSR compatibility
+  
+  // Static translations for better SSR compatibility
+  const t = (key: string) => {
+    const translations: Record<string, string> = {
+      'createAccount': 'Create Account',
+      'fullName': 'Full Name',
+      'email': 'Email',
+      'password': 'Password',
+      'confirmPassword': 'Confirm Password',
+      'selectRole': 'Select Role',
+      'location': 'Location',
+      'creating': 'Creating...',
+      'signUp': 'Sign Up',
+      'alreadyHaveAccount': 'Already have an account?',
+      'signIn': 'Sign In',
+      'joinHealthSystem': 'Join the Health Surveillance System',
+      'roleDescriptions': 'Choose your role to get started',
+      'adminAccess': 'Admin Access',
+      'healthProfessional': 'Health Professional',
+      'communityUser': 'Community User'
+    };
+    return translations[key] || key;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate password strength
+    const { isValid } = validatePassword(password);
+    if (!isValid) {
+      alert('Password does not meet the required criteria. Please check the requirements below.');
+      return;
+    }
+    
     if (password !== confirmPassword) {
       alert('Passwords do not match');
       return;
@@ -105,15 +139,15 @@ export default function RegisterPage() {
               <Label htmlFor="password" className="text-sm font-medium">
                 {t('password')}
               </Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="mt-2 h-11 rounded-xl"
                 placeholder="••••••••"
               />
+              <PasswordStrengthIndicator password={password} />
             </div>
 
             <div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed for SSR compatibility
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Activity, AlertTriangle, Droplet, TrendingUp } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -11,7 +11,20 @@ import AISuggestions from '@/components/AISuggestions';
 const DiseaseMap = dynamic(() => import('@/components/DiseaseMap'), { ssr: false });
 
 export default function DashboardPage() {
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed for SSR compatibility
+  
+  // Static text replacements for better SSR compatibility
+  const t = (key: string) => {
+    const translations: Record<string, string> = {
+      'activeCases': 'Active Cases',
+      'waterQualityAlerts': 'Water Quality Alerts', 
+      'dashboard': 'Health Dashboard',
+      'diseaseHotspots': 'Disease Hotspots',
+      'casesTrend': 'Cases Trend',
+      'waterQualityTrend': 'Water Quality Trend'
+    };
+    return translations[key] || key;
+  };
 
   const stats = [
     {

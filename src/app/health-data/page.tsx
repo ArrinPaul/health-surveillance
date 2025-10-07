@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed for SSR compatibility
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,8 @@ import { Upload, Search, Filter } from 'lucide-react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 export default function HealthDataPage() {
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed for SSR compatibility
+  const t = (key: string) => key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({

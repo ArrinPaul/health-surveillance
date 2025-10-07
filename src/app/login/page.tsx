@@ -5,14 +5,16 @@ import React from 'react';
 const { useState } = React;
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed for SSR compatibility
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
 import { Shield, Stethoscope, Users, ArrowRight } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
+import { validatePassword } from '@/lib/passwordValidation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -20,10 +22,36 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed for SSR compatibility
+  
+  // Static translations for better SSR compatibility
+  const t = (key: string) => {
+    const translations: Record<string, string> = {
+      'signIn': 'Sign In',
+      'email': 'Email',
+      'password': 'Password',
+      'signingIn': 'Signing In...',
+      'signInButton': 'Sign In',
+      'dontHaveAccount': "Don't have an account?",
+      'signUp': 'Sign Up',
+      'welcomeBack': 'Welcome Back',
+      'signInToContinue': 'Sign in to continue to the health surveillance system',
+      'adminAccess': 'Admin Access',
+      'healthProfessional': 'Health Professional',
+      'communityUser': 'Community User'
+    };
+    return translations[key] || key;
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    
+    // Basic validation for login
+    if (password.length < 8) {
+      alert('Password must be at least 8 characters long');
+      return;
+    }
+    
     setLoading(true);
     try {
       // Login without specifying role - backend will determine user's role from signup data
@@ -85,9 +113,8 @@ export default function LoginPage() {
               <Label htmlFor="password" className="text-sm font-medium">
                 {t('password')}
               </Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 value={password}
                 onChange={(e: any) => setPassword(e.target.value)}
                 required

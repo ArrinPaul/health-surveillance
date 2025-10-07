@@ -21,7 +21,7 @@ function log(color, prefix, message) {
 
 class AIFeaturesTest {
   constructor() {
-    this.baseURL = 'http://localhost:5000';
+    this.baseURL = 'https://health-surveillance-nq6wyviga-arrinpaul11-6489s-projects.vercel.app/api';
     this.results = {
       total: 0,
       passed: 0,

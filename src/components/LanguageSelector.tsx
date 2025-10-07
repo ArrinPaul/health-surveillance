@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed for SSR compatibility
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,7 +42,9 @@ interface VoiceSettings {
 }
 
 const LanguageSelector: React.FC = () => {
-  const { i18n, t } = useTranslation();
+  // const { i18n, t } = useTranslation(); // Removed for SSR compatibility
+  const t = (key: string) => key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+  const i18n = { language: 'en', changeLanguage: (lang: string) => Promise.resolve() }; // Mock i18n
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>({
     enabled: true,
@@ -193,6 +195,9 @@ const LanguageSelector: React.FC = () => {
   ];
 
   useEffect(() => {
+    // Only access localStorage on client side
+    if (typeof window === 'undefined') return;
+    
     // Load saved language and voice settings
     const savedLanguage = localStorage.getItem('preferredLanguage');
     const savedVoiceSettings = localStorage.getItem('voiceSettings');
@@ -232,7 +237,9 @@ const LanguageSelector: React.FC = () => {
     try {
       await i18n.changeLanguage(languageCode);
       setCurrentLanguage(languageCode);
-      localStorage.setItem('preferredLanguage', languageCode);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('preferredLanguage', languageCode);
+      }
       
       // Announce language change if voice is enabled
       if (voiceSettings.enabled) {
@@ -251,11 +258,13 @@ const LanguageSelector: React.FC = () => {
   const updateVoiceSettings = (newSettings: Partial<VoiceSettings>) => {
     const updated = { ...voiceSettings, ...newSettings };
     setVoiceSettings(updated);
-    localStorage.setItem('voiceSettings', JSON.stringify(updated));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('voiceSettings', JSON.stringify(updated));
+    }
   };
 
   const speakText = (text: string, language?: string) => {
-    if (!voiceSettings.enabled || !('speechSynthesis' in window)) return;
+    if (typeof window === 'undefined' || !voiceSettings.enabled || !('speechSynthesis' in window)) return;
 
     const utterance = new SpeechSynthesisUtterance(text);
     const langCode = language || currentLanguage;

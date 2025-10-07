@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed for SSR compatibility
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,10 +10,13 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { User, Mail, MapPin, Shield, Save } from 'lucide-react';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import PasswordStrengthIndicator from '@/components/ui/PasswordStrengthIndicator';
+import { validatePassword } from '@/lib/passwordValidation';
 
 export default function ProfilePage() {
   const { user } = useAuth();
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed for SSR compatibility
+  const t = (key: string) => key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   
@@ -28,10 +31,29 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     setLoading(true);
+    
+    // Validate password if it's being changed
+    if (formData.newPassword) {
+      const { isValid } = validatePassword(formData.newPassword);
+      if (!isValid) {
+        alert('Password does not meet the required criteria. Please check the requirements.');
+        setLoading(false);
+        return;
+      }
+      
+      if (formData.newPassword !== formData.confirmPassword) {
+        alert('Passwords do not match');
+        setLoading(false);
+        return;
+      }
+    }
+    
     setTimeout(() => {
       setLoading(false);
       setEditing(false);
       alert('Profile updated successfully!');
+      // Clear password fields after successful update
+      setFormData(prev => ({ ...prev, newPassword: '', confirmPassword: '' }));
     }, 1000);
   };
 
@@ -165,6 +187,7 @@ export default function ProfilePage() {
                         className="mt-1"
                         placeholder="••••••••"
                       />
+                      <PasswordStrengthIndicator password={formData.newPassword} />
                     </div>
 
                     <div>

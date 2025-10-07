@@ -1,7 +1,7 @@
 "use client";
 
 import { useSettings } from '@/contexts/SettingsContext';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed for SSR compatibility
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -22,7 +22,9 @@ export default function SettingsPage() {
     setTheme
   } = useSettings();
   
-  const { t, i18n } = useTranslation();
+  // const { t, i18n } = useTranslation(); // Removed for SSR compatibility
+  const t = (key: string) => key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+  const i18n = { changeLanguage: (lang: string) => setLanguage(lang) }; // Mock i18n
 
   const handleLanguageChange = (lang: string) => {
     setLanguage(lang);

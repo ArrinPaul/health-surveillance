@@ -22,45 +22,56 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
-    // Load settings from localStorage
-    const storedFontSize = localStorage.getItem('fontSize') as 'small' | 'medium' | 'large' | null;
-    const storedHighContrast = localStorage.getItem('highContrast') === 'true';
-    const storedLanguage = localStorage.getItem('language');
-    const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    // Load settings from localStorage (client-side only)
+    if (typeof window !== 'undefined') {
+      const storedFontSize = localStorage.getItem('fontSize') as 'small' | 'medium' | 'large' | null;
+      const storedHighContrast = localStorage.getItem('highContrast') === 'true';
+      const storedLanguage = localStorage.getItem('language');
+      const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
 
-    if (storedFontSize) setFontSize(storedFontSize);
-    if (storedHighContrast) setHighContrast(true);
-    if (storedLanguage) setLanguage(storedLanguage);
-    if (storedTheme) setTheme(storedTheme);
-
-    // Apply theme
-    if (storedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
+      if (storedFontSize) setFontSize(storedFontSize);
+      if (storedHighContrast) setHighContrast(true);
+      if (storedLanguage) setLanguage(storedLanguage);
+      if (storedTheme) {
+        setTheme(storedTheme);
+        // Apply theme
+        if (storedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      }
     }
   }, []);
 
   const handleSetFontSize = (size: 'small' | 'medium' | 'large') => {
     setFontSize(size);
-    localStorage.setItem('fontSize', size);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('fontSize', size);
+    }
   };
 
   const handleSetHighContrast = (enabled: boolean) => {
     setHighContrast(enabled);
-    localStorage.setItem('highContrast', enabled.toString());
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('highContrast', enabled.toString());
+    }
   };
 
   const handleSetLanguage = (lang: string) => {
     setLanguage(lang);
-    localStorage.setItem('language', lang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('language', lang);
+    }
   };
 
   const handleSetTheme = (newTheme: 'light' | 'dark') => {
     setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('theme', newTheme);
+      if (newTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
   };
 
