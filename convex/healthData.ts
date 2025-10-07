@@ -1,11 +1,10 @@
-// Convex server functions - temporarily disabled for deployment
-// To enable Convex, run: npx convex dev
+// Convex server functions for health data management
+// Run: npx convex dev to generate the server code
 
-// import { mutation, query } from "./_generated/server";
-// import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
 
-// Add health data - temporarily disabled for deployment
-/*
+// Add health data
 export const addHealthData = mutation({
   args: {
     userId: v.id("users"),
@@ -72,4 +71,3 @@ export const getRecentHealthData = query({
       .take(100);
   },
 });
-*/

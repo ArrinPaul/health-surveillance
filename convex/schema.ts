@@ -1,10 +1,9 @@
-// Convex schema - temporarily disabled for deployment
-// To enable Convex, uncomment the imports and schema below
+// Convex schema definition
+// Run: npx convex dev to generate the server code
 
-// import { defineSchema, defineTable } from "convex/server";
-// import { v } from "convex/values";
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
 
-/*
 export default defineSchema({
   users: defineTable({
     email: v.string(),
@@ -52,6 +51,27 @@ export default defineSchema({
     .index("by_category", ["category"])
     .index("by_status", ["status"])
     .index("by_created", ["createdAt"]),
+
+  diseaseOutbreaks: defineTable({
+    disease: v.string(),
+    cases: v.number(),
+    location: v.string(),
+    latitude: v.number(),
+    longitude: v.number(),
+    severity: v.union(v.literal("low"), v.literal("medium"), v.literal("high"), v.literal("critical")),
+    symptoms: v.optional(v.array(v.string())),
+    reportedBy: v.string(), // userId
+    notes: v.optional(v.string()),
+    timestamp: v.number(),
+    status: v.string(), // "active", "contained", "resolved"
+    confirmedCases: v.number(),
+    suspectedCases: v.number(),
+    deaths: v.number(),
+    recovered: v.number(),
+  }).index("by_location", ["location"])
+    .index("by_status", ["status"])
+    .index("by_severity", ["severity"])
+    .index("by_timestamp", ["timestamp"]),
 
   waterQuality: defineTable({
     location: v.object({
@@ -102,8 +122,3 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_timestamp", ["timestamp"]),
 });
-*/
-
-// Temporary export to prevent build errors
-const tempSchema = {};
-export default tempSchema;

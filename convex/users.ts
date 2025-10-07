@@ -1,11 +1,10 @@
-// Convex server functions - temporarily disabled for deployment
-// To enable Convex, run: npx convex dev
+// Convex server functions for user management
+// Run: npx convex dev to generate the server code
 
-// import { mutation, query } from "./_generated/server";
-// import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
 
-// Create a new user - temporarily disabled for deployment
-/*
+// Create a new user
 export const createUser = mutation({
   args: {
     email: v.string(),
@@ -62,4 +61,3 @@ export const getUser = query({
     return await ctx.db.get(args.userId);
   },
 });
-*/

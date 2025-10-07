@@ -4,13 +4,34 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Activity, AlertTriangle, Droplet, TrendingUp } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { useState, useEffect } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import AISuggestions from '@/components/AISuggestions';
+// Temporarily disabled AI Suggestions to fix hydration issues
+// import AISuggestions from '@/components/AISuggestions';
 
 const DiseaseMap = dynamic(() => import('@/components/DiseaseMap'), { ssr: false });
 
+// Make charts client-only to prevent hydration issues
+const LineChart = dynamic(() => import('recharts').then(mod => mod.LineChart), { ssr: false });
+const Line = dynamic(() => import('recharts').then(mod => mod.Line), { ssr: false });
+const BarChart = dynamic(() => import('recharts').then(mod => mod.BarChart), { ssr: false });
+const Bar = dynamic(() => import('recharts').then(mod => mod.Bar), { ssr: false });
+const XAxis = dynamic(() => import('recharts').then(mod => mod.XAxis), { ssr: false });
+const YAxis = dynamic(() => import('recharts').then(mod => mod.YAxis), { ssr: false });
+const CartesianGrid = dynamic(() => import('recharts').then(mod => mod.CartesianGrid), { ssr: false });
+const Tooltip = dynamic(() => import('recharts').then(mod => mod.Tooltip), { ssr: false });
+const Legend = dynamic(() => import('recharts').then(mod => mod.Legend), { ssr: false });
+const ResponsiveContainer = dynamic(() => import('recharts').then(mod => mod.ResponsiveContainer), { ssr: false });
+const PieChart = dynamic(() => import('recharts').then(mod => mod.PieChart), { ssr: false });
+const Pie = dynamic(() => import('recharts').then(mod => mod.Pie), { ssr: false });
+const Cell = dynamic(() => import('recharts').then(mod => mod.Cell), { ssr: false });
+
 export default function DashboardPage() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   // const { t } = useTranslation(); // Removed for SSR compatibility
   
   // Static text replacements for better SSR compatibility
@@ -98,8 +119,8 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* AI-Powered Suggestions */}
-        <AISuggestions />
+        {/* AI-Powered Suggestions - Temporarily Disabled */}
+        {/* <AISuggestions /> */}
 
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -130,7 +151,7 @@ export default function DashboardPage() {
               <CardTitle>{t('diseaseHotspots')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <DiseaseMap />
+              {isMounted ? <DiseaseMap /> : <div className="h-[300px] flex items-center justify-center text-muted-foreground">Loading map...</div>}
             </CardContent>
           </Card>
 
@@ -139,25 +160,29 @@ export default function DashboardPage() {
               <CardTitle>Disease Distribution</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={diseaseDistribution}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }: any) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {diseaseDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+              {isMounted ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={diseaseDistribution}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }: any) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {diseaseDistribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-[300px] flex items-center justify-center text-muted-foreground">Loading chart...</div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -169,17 +194,21 @@ export default function DashboardPage() {
               <CardTitle>{t('casesTrend')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={casesTrendData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="cases" stroke="#3b82f6" strokeWidth={2} name="Actual Cases" />
-                  <Line type="monotone" dataKey="predictions" stroke="#10b981" strokeWidth={2} strokeDasharray="5 5" name="Predicted" />
-                </LineChart>
-              </ResponsiveContainer>
+              {isMounted ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={casesTrendData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="cases" stroke="#3b82f6" strokeWidth={2} name="Actual Cases" />
+                    <Line type="monotone" dataKey="predictions" stroke="#10b981" strokeWidth={2} strokeDasharray="5 5" name="Predicted" />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-[300px] flex items-center justify-center text-muted-foreground">Loading chart...</div>
+              )}
             </CardContent>
           </Card>
 
@@ -188,17 +217,21 @@ export default function DashboardPage() {
               <CardTitle>{t('waterQualityTrend')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={waterQualityData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="pH" fill="#3b82f6" name="pH Level" />
-                  <Bar dataKey="turbidity" fill="#f59e0b" name="Turbidity (NTU)" />
-                </BarChart>
-              </ResponsiveContainer>
+              {isMounted ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={waterQualityData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="pH" fill="#3b82f6" name="pH Level" />
+                    <Bar dataKey="turbidity" fill="#f59e0b" name="Turbidity (NTU)" />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-[300px] flex items-center justify-center text-muted-foreground">Loading chart...</div>
+              )}
             </CardContent>
           </Card>
         </div>
