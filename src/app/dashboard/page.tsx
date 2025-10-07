@@ -20,7 +20,7 @@ const XAxis = dynamic(() => import('recharts').then(mod => mod.XAxis), { ssr: fa
 const YAxis = dynamic(() => import('recharts').then(mod => mod.YAxis), { ssr: false });
 const CartesianGrid = dynamic(() => import('recharts').then(mod => mod.CartesianGrid), { ssr: false });
 const Tooltip = dynamic(() => import('recharts').then(mod => mod.Tooltip), { ssr: false });
-const Legend = dynamic(() => import('recharts').then(mod => mod.Legend), { ssr: false });
+const Legend = dynamic<any>(() => import('recharts').then(mod => mod.Legend), { ssr: false });
 const ResponsiveContainer = dynamic(() => import('recharts').then(mod => mod.ResponsiveContainer), { ssr: false });
 const PieChart = dynamic(() => import('recharts').then(mod => mod.PieChart), { ssr: false });
 const Pie = dynamic(() => import('recharts').then(mod => mod.Pie), { ssr: false });

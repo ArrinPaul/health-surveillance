@@ -166,6 +166,3 @@ This project is licensed under the MIT License.
 
 **Your Health Surveillance System is now running!**
 
-
-#if i am hosting this into vercel and if my api keys are not mentioned in github repo which i am deploying 
-will all AI features work ??
