@@ -40,6 +40,9 @@
   "exclude": [
     "node_modules",
     ".next",
-    "convex/_generated"
+    "convex/_generated",
+    "**/REALTIME_EXAMPLE.tsx",
+    "**/*.example.tsx",
+    "**/docs-*.txt"
   ]
 }
