@@ -1,6 +1,10 @@
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
+// Convex schema - temporarily disabled for deployment
+// To enable Convex, uncomment the imports and schema below
 
+// import { defineSchema, defineTable } from "convex/server";
+// import { v } from "convex/values";
+
+/*
 export default defineSchema({
   users: defineTable({
     email: v.string(),
@@ -98,3 +102,8 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_timestamp", ["timestamp"]),
 });
+*/
+
+// Temporary export to prevent build errors
+const tempSchema = {};
+export default tempSchema;

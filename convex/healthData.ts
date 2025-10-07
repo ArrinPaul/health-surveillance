@@ -1,12 +1,11 @@
-// Ensure the Convex CLI is installed and run the following command to generate the server code:
-// npx convex dev
+// Convex server functions - temporarily disabled for deployment
+// To enable Convex, run: npx convex dev
 
-// This will generate the './_generated/server' module required for this file.
+// import { mutation, query } from "./_generated/server";
+// import { v } from "convex/values";
 
-import { mutation, query } from "./_generated/server";
-import { v } from "convex/values";
-
-// Add health data
+// Add health data - temporarily disabled for deployment
+/*
 export const addHealthData = mutation({
   args: {
     userId: v.id("users"),
@@ -73,3 +72,4 @@ export const getRecentHealthData = query({
       .take(100);
   },
 });
+*/
