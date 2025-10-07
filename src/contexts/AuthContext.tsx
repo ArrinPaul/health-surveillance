@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string): Promise<User> => {
     try {
       // Call backend login API to get user with their stored role
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -63,7 +63,7 @@ export default function WaterQualityPage() {
       }
 
       // Call the real backend API
-      const response = await fetch(`http://localhost:5000/api/water-quality?lat=${lat}&lon=${lng}`);
+      const response = await fetch(`/api/water-quality?lat=${lat}&lon=${lng}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch water quality data');
@@ -74,7 +74,7 @@ export default function WaterQualityPage() {
       // Get AI analysis from Gemini
       let aiAnalysis = [];
       try {
-        const aiResponse = await fetch('http://localhost:5000/water-quality/analyze', {
+        const aiResponse = await fetch('/api/water-quality/analyze', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

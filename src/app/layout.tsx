@@ -5,6 +5,8 @@ import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import ClientProviders from "@/components/ClientProviders";
 
+console.log("Layout component loaded");
+
 export const metadata: Metadata = {
   title: "Smart Health Surveillance System",
   description: "Early Warning System for Health Officials and Community - Disease Monitoring and Water Quality Tracking",
