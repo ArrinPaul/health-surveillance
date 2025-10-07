@@ -48,7 +48,7 @@ export default function RootLayout({
         {/* Disable service worker in development */}
         <Script id="disable-service-worker" strategy="afterInteractive">
           {`
-            if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && ${JSON.stringify(process.env.NODE_ENV === 'production')}) {
+            if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && ${process.env.NODE_ENV === 'production'}) {
               navigator.serviceWorker.register('/sw.js');
             } else if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
               // Unregister service worker in development

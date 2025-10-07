@@ -3,9 +3,10 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import { MapPin, Search, Layers, Navigation, AlertTriangle, Droplets, Heart, Users } from 'lucide-react';
 
 // Fix for default markers in Leaflet
@@ -16,7 +17,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Interfaces
 interface LocationData {
   id: string;
   type: 'health_report' | 'water_quality' | 'community_report' | 'alert';
@@ -170,12 +170,24 @@ const MapComponent: React.FC<MapComponentProps> = ({
     });
   };
 
-  // Update center
-  useEffect(() => {
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.setView(center, zoom);
+  // Handle search
+  const handleSearch = useCallback(async () => {
+    if (!searchQuery.trim()) return;
+
+    const result = await geocodeLocation(searchQuery);
+    if (result && mapInstanceRef.current) {
+      mapInstanceRef.current.setView([result.lat, result.lng], 15);
+      setSelectedLocation(result);
+      
+      if (showWeather) {
+        await getWeatherData(result.lat, result.lng);
+      }
+      
+      if (onLocationSelect) {
+        onLocationSelect(result);
+      }
     }
-  }, [center, zoom]);
+  }, [searchQuery, geocodeLocation, getWeatherData, showWeather, onLocationSelect]);
 
   // Initialize map
   useEffect(() => {
@@ -293,25 +305,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
       });
     }
   }, [markers, layerVisibility]);
-
-  // Search functionality
-  const handleSearch = useCallback(async () => {
-    if (!searchQuery.trim()) return;
-
-    const result = await geocodeLocation(searchQuery);
-    if (result && mapInstanceRef.current) {
-      mapInstanceRef.current.setView([result.lat, result.lng], 15);
-      setSelectedLocation(result);
-
-      if (showWeather) {
-        await getWeatherData(result.lat, result.lng);
-      }
-
-      if (onLocationSelect) {
-        onLocationSelect(result);
-      }
-    }
-  }, [searchQuery, geocodeLocation, getWeatherData, showWeather, onLocationSelect]);
 
   return (
     <div className={`space-y-4 ${className}`}>
