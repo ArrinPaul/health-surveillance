@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["ES2021"],
+    "target": "ES2021",
+    "skipLibCheck": true,
+    "allowJs": false,
+    "strict": false
+  },
+  "include": ["convex/**/*"],
+  "exclude": ["convex/_generated"]
+}

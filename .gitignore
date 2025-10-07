@@ -28,6 +28,9 @@ VERCEL_DEPLOYMENT.md
 .env
 .env.local
 
+# Convex generated files (run: npx convex dev)
+convex/_generated/
+
 # testing
 /coverage
 
