@@ -48,13 +48,16 @@ export default function RootLayout({
         {/* Disable service worker in development */}
         <Script id="disable-service-worker" strategy="afterInteractive">
           {`
-            if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && ${process.env.NODE_ENV === 'production'}) {
-              navigator.serviceWorker.register('/sw.js');
-            } else if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
-              // Unregister service worker in development
-              navigator.serviceWorker.getRegistrations().then(registrations => {
-                registrations.forEach(registration => registration.unregister());
-              });
+            if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+              const isProduction = ${process.env.NODE_ENV === 'production'};
+              if (isProduction) {
+                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed', err));
+              } else {
+                // Unregister service worker in development
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                  registrations.forEach(registration => registration.unregister());
+                });
+              }
             }
           `}
         </Script>

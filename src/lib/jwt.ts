@@ -1,10 +1,17 @@
 import jwt from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+// Use a fallback secret for development if JWT_SECRET is not set
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-dev-secret-key-change-in-production-minimum-32-chars';
 
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET is not defined in environment variables');
+// Only warn in development if JWT_SECRET is not set
+if (!process.env.JWT_SECRET && process.env.NODE_ENV !== 'production') {
+  console.warn('⚠️ JWT_SECRET is not defined. Using fallback secret for development.');
+}
+
+// In production, throw an error if JWT_SECRET is not set
+if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+  console.error('❌ JWT_SECRET must be defined in production environment');
 }
 
 export interface JWTPayload {

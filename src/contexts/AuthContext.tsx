@@ -25,15 +25,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Check localStorage for existing session (client-side only)
     if (typeof window !== 'undefined') {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-        setIsAuthenticated(true);
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error('Error loading user from localStorage:', error);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+      } finally {
+        setIsLoading(false);
       }
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
@@ -49,44 +61,60 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        const errorData = await response.json().catch(() => ({ error: 'Login failed' }));
+        throw new Error(errorData.error || 'Login failed');
       }
 
       const userData = await response.json();
-      const user: User = userData.user;
+      
+      // Handle case where API returns user directly or nested in 'user' property
+      const user: User = userData.user || userData;
+      
+      if (!user || !user.id) {
+        throw new Error('Invalid response from server');
+      }
       
       setUser(user);
       setIsAuthenticated(true);
       if (typeof window !== 'undefined') {
         localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('token', userData.token);
+        if (userData.token) {
+          localStorage.setItem('token', userData.token);
+        }
       }
       
       return user;
     } catch (error) {
-      // Fallback to mock data for development
-      console.log('Using mock login data');
+      console.error('Login error:', error);
       
-      // Mock users with different roles based on email
-      let role: UserRole = 'community-user';
-      if (email.includes('admin')) role = 'admin';
-      else if (email.includes('health') || email.includes('worker')) role = 'health-worker';
-      
-      const mockUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        name: email.split('@')[0],
-        email,
-        role,
-        location: 'Guwahati, Assam'
-      };
-      
-      setUser(mockUser);
-      setIsAuthenticated(true);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('user', JSON.stringify(mockUser));
+      // In development, provide mock data as fallback
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Using mock login data for development');
+        
+        // Mock users with different roles based on email
+        let role: UserRole = 'community-user';
+        if (email.includes('admin')) role = 'admin';
+        else if (email.includes('health') || email.includes('worker')) role = 'health-worker';
+        
+        const mockUser: User = {
+          id: Math.random().toString(36).substr(2, 9),
+          name: email.split('@')[0],
+          email,
+          role,
+          location: 'Guwahati, Assam'
+        };
+        
+        setUser(mockUser);
+        setIsAuthenticated(true);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(mockUser));
+        }
+        
+        return mockUser;
       }
       
-      return mockUser;
+      // In production, re-throw the error
+      throw error;
     }
   };
 
@@ -112,12 +140,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthenticated(false);
     if (typeof window !== 'undefined') {
       localStorage.removeItem('user');
+      localStorage.removeItem('token');
     }
   };
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated }}>
-      {children}
+      {isLoading ? (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          backgroundColor: '#f9fafb',
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              width: '50px',
+              height: '50px',
+              border: '4px solid #e5e7eb',
+              borderTopColor: '#3b82f6',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto 16px',
+            }} />
+            <p style={{ color: '#6b7280', fontSize: '14px' }}>Loading...</p>
+            <style>{`
+              @keyframes spin {
+                to { transform: rotate(360deg); }
+              }
+            `}</style>
+          </div>
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 }

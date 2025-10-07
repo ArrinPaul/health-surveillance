@@ -69,8 +69,10 @@ export async function POST(request: NextRequest) {
         id: user.id,
         email: user.email,
         name: user.name,
-        role: user.role
-      }
+        role: user.role,
+        location: 'Guwahati, Assam'
+      },
+      token: token
     });
 
     // Set HTTP-only cookie for security
