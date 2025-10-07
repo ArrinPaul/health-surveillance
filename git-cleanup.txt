@@ -1,0 +1,32 @@
+# Git commands to clean up repository
+
+# Remove files from git tracking
+git rm --cached deploy.bat
+git rm --cached deploy.ps1
+git rm --cached deploy.sh
+git rm --cached deployment-fix.ps1
+git rm --cached DEPLOYMENT.md
+git rm --cached DEPLOYMENT_CHECKLIST.md
+git rm --cached DEPLOY_NOW.md
+git rm --cached QUICK_DEPLOY.md
+git rm --cached VERCEL_DEPLOYMENT.md
+git rm --cached .env
+git rm --cached .env.local
+git rm --cached tsconfig.tsbuildinfo
+git rm --cached -r .next
+git rm --cached -r .vercel
+
+# Remove the cleanup script itself after use
+git rm --cached cleanup.ps1
+
+# Commit the cleanup
+git add .
+git commit -m "🧹 Clean up codebase: Remove unnecessary deployment scripts and build artifacts
+
+- Removed deployment scripts (*.bat, *.ps1, *.sh)
+- Removed duplicate documentation files
+- Removed build artifacts (.next, .vercel, *.tsbuildinfo)  
+- Removed local environment files
+- Updated .gitignore to prevent future inclusion
+- Cleaned up README.md formatting
+- Repository now contains only essential production files"

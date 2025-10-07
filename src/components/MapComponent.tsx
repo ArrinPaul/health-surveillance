@@ -1,8 +1,6 @@
 'use client';
 
-import React from 'react';
-// @ts-ignore - React 19 compatibility issue
-const { useEffect, useRef } = React;
+import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -28,6 +26,14 @@ interface MapComponentProps {
   className?: string;
   height?: string;
 }
+
+type Marker = {
+  type: string;
+  color: string;
+  lat: number;
+  lon: number;
+  popup?: string;
+};
 
 const MapComponent = ({
   center,

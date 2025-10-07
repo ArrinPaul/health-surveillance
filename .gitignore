@@ -11,6 +11,23 @@
 !.yarn/releases
 !.yarn/versions
 
+# Deployment scripts (unnecessary for production)
+deploy.bat
+deploy.ps1
+deploy.sh
+deployment-fix.ps1
+
+# Documentation files (keep only README.md and FEATURES.md)
+DEPLOYMENT.md
+DEPLOYMENT_CHECKLIST.md
+DEPLOY_NOW.md
+QUICK_DEPLOY.md
+VERCEL_DEPLOYMENT.md
+
+# Environment files
+.env
+.env.local
+
 # testing
 /coverage
 

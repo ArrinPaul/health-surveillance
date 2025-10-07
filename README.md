@@ -1,10 +1,8 @@
-# Smart Health Surveillance System
+# Health Surveillance System
 
-A comprehensive health monitoring and surveillance platform designed for health officials, workers, and community members to track disease outbreaks, monitor water quality, and receive AI-powered health insights.
+A comprehensive web-based health surveillance system designed for monitoring water quality, disease outbreaks, and community health. The system supports multiple languages and includes AI-powered features for health assistance and recommendations.
 
-
-
-## Key Features## Features
+## Features
 
 - Real-time health data monitoring
 
