@@ -25,7 +25,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Disabled loading state
 
   useEffect(() => {
     // Check localStorage for existing session (client-side only)
@@ -41,11 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error('Error loading user from localStorage:', error);
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-      } finally {
-        setIsLoading(false);
       }
-    } else {
-      setIsLoading(false);
     }
   }, []);
 
@@ -146,35 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated }}>
-      {isLoading ? (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-          backgroundColor: '#f9fafb',
-        }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              width: '50px',
-              height: '50px',
-              border: '4px solid #e5e7eb',
-              borderTopColor: '#3b82f6',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite',
-              margin: '0 auto 16px',
-            }} />
-            <p style={{ color: '#6b7280', fontSize: '14px' }}>Loading...</p>
-            <style>{`
-              @keyframes spin {
-                to { transform: rotate(360deg); }
-              }
-            `}</style>
-          </div>
-        </div>
-      ) : (
-        children
-      )}
+      {children}
     </AuthContext.Provider>
   );
 }

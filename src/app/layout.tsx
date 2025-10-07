@@ -1,11 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
-import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import ClientProviders from "@/components/ClientProviders";
-
-console.log("Layout component loaded");
 
 export const metadata: Metadata = {
   title: "Smart Health Surveillance System",
@@ -44,8 +40,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body className="antialiased">
-        <ErrorReporter />
-        {/* Disable service worker in development */}
+        {/* Service worker registration */}
         <Script id="disable-service-worker" strategy="afterInteractive">
           {`
             if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
@@ -108,8 +103,6 @@ export default function RootLayout({
         <ClientProviders>
           {children}
         </ClientProviders>
-        {/* Disable VisualEditsMessenger in production to prevent crashes */}
-        {process.env.NODE_ENV === 'development' && <VisualEditsMessenger />}
       </body>
     </html>
   );
