@@ -1,8 +1,6 @@
-# Health Surveillance# Health Surveillance System
+# Smart Health Surveillance System
 
-
-
-This project is designed to monitor and analyze health-related data to provide insights and alerts for better decision-making. It leverages modern web technologies and data analysis tools to deliver a comprehensive solution for health surveillance.A comprehensive web-based health surveillance system designed for monitoring water quality, disease outbreaks, and community health in India. The system supports 15 Indian languages and includes AI-powered features for health assistance and recommendations.
+A comprehensive health monitoring and surveillance platform designed for health officials, workers, and community members to track disease outbreaks, monitor water quality, and receive AI-powered health insights.
 
 
 
