@@ -9,11 +9,13 @@
         "lint": "next lint",
         "deploy": "vercel --prod",
         "deploy:preview": "vercel",
+        "deploy:check": "npm run build && npm run lint",
         "generate-sitemap": "next-sitemap",
         "security-check": "node security-check.js",
         "test:ai": "node test-ai-features.js",
         "test:full": "npm run security-check && npm run test:ai",
-        "vercel-build": "npm run build"
+        "vercel-build": "npm run build",
+        "postinstall": "echo 'Installation complete! Run npm run dev to start development server'"
     },
     "dependencies": {
         "@babel/parser": "^7.28.4",
