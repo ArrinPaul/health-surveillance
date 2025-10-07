@@ -33,11 +33,13 @@ interface Suggestion {
 const AISuggestions: React.FC = () => {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [dismissedSuggestions, setDismissedSuggestions] = useState<Set<string>>(new Set());
+  const [hasError, setHasError] = useState(false);
 
   // Generate AI-powered suggestions based on current conditions
   const generateSuggestions = (): Suggestion[] => {
-    const currentHour = new Date().getHours();
-    const currentMonth = new Date().getMonth();
+    try {
+      const currentHour = new Date().getHours();
+      const currentMonth = new Date().getMonth();
     
     const baseSuggestions: Suggestion[] = [
       {
@@ -117,6 +119,10 @@ const AISuggestions: React.FC = () => {
     }
 
     return baseSuggestions;
+    } catch (error) {
+      console.error('Error generating suggestions:', error);
+      return [];
+    }
   };
 
   useEffect(() => {
@@ -183,6 +189,11 @@ const AISuggestions: React.FC = () => {
       default: return 'text-gray-500';
     }
   };
+
+  // Safety check
+  if (hasError) {
+    return null;
+  }
 
   const activeSuggestions = suggestions.filter(s => !dismissedSuggestions.has(s.id));
 

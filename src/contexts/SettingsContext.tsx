@@ -24,20 +24,24 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Load settings from localStorage (client-side only)
     if (typeof window !== 'undefined') {
-      const storedFontSize = localStorage.getItem('fontSize') as 'small' | 'medium' | 'large' | null;
-      const storedHighContrast = localStorage.getItem('highContrast') === 'true';
-      const storedLanguage = localStorage.getItem('language');
-      const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+      try {
+        const storedFontSize = localStorage.getItem('fontSize') as 'small' | 'medium' | 'large' | null;
+        const storedHighContrast = localStorage.getItem('highContrast') === 'true';
+        const storedLanguage = localStorage.getItem('language');
+        const storedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
 
-      if (storedFontSize) setFontSize(storedFontSize);
-      if (storedHighContrast) setHighContrast(true);
-      if (storedLanguage) setLanguage(storedLanguage);
-      if (storedTheme) {
-        setTheme(storedTheme);
-        // Apply theme
-        if (storedTheme === 'dark') {
-          document.documentElement.classList.add('dark');
+        if (storedFontSize) setFontSize(storedFontSize);
+        if (storedHighContrast) setHighContrast(true);
+        if (storedLanguage) setLanguage(storedLanguage);
+        if (storedTheme) {
+          setTheme(storedTheme);
+          // Apply theme
+          if (storedTheme === 'dark' && typeof document !== 'undefined') {
+            document.documentElement.classList.add('dark');
+          }
         }
+      } catch (error) {
+        console.error('Error loading settings from localStorage:', error);
       }
     }
   }, []);
@@ -65,12 +69,16 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   const handleSetTheme = (newTheme: 'light' | 'dark') => {
     setTheme(newTheme);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('theme', newTheme);
-      if (newTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      try {
+        localStorage.setItem('theme', newTheme);
+        if (newTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (error) {
+        console.error('Error setting theme:', error);
       }
     }
   };

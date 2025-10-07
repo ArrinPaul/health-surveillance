@@ -15,8 +15,12 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push('/dashboard');
+    try {
+      if (isAuthenticated) {
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error('Navigation error:', error);
     }
   }, [isAuthenticated, router]);
 

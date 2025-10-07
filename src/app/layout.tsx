@@ -108,7 +108,8 @@ export default function RootLayout({
         <ClientProviders>
           {children}
         </ClientProviders>
-        <VisualEditsMessenger />
+        {/* Disable VisualEditsMessenger in production to prevent crashes */}
+        {process.env.NODE_ENV === 'development' && <VisualEditsMessenger />}
       </body>
     </html>
   );
