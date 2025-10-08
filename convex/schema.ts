@@ -1,7 +1,6 @@
 // Convex schema definition
 // Run: npx convex dev to generate the server code
 
-// @ts-ignore - Generated after running: npx convex dev
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 

@@ -40,66 +40,6 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
       <body className="antialiased">
-        {/* Service worker registration */}
-        <Script id="disable-service-worker" strategy="afterInteractive">
-          {`
-            if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
-              const isProduction = ${process.env.NODE_ENV === 'production'};
-              if (isProduction) {
-                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed', err));
-              } else {
-                // Unregister service worker in development
-                navigator.serviceWorker.getRegistrations().then(registrations => {
-                  registrations.forEach(registration => registration.unregister());
-                });
-              }
-            }
-          `}
-        </Script>
-        <Script id="suppress-resize-observer" strategy="beforeInteractive">
-          {`
-            // Suppress benign ResizeObserver error (common with Radix UI/shadcn)
-            (function() {
-              const resizeObserverErrHandler = function(e) {
-                if (e.message && e.message.includes('ResizeObserver loop')) {
-                  const resizeObserverErr = 'ResizeObserver loop completed with undelivered notifications.';
-                  if (e.message === resizeObserverErr || e.message.includes('ResizeObserver')) {
-                    e.stopImmediatePropagation();
-                    e.preventDefault();
-                    return false;
-                  }
-                }
-              };
-              
-              if (typeof window !== 'undefined') {
-                window.addEventListener('error', resizeObserverErrHandler);
-                
-                const originalOnError = window.onerror;
-                window.onerror = function(message, source, lineno, colno, error) {
-                  if (message && typeof message === 'string' && message.includes('ResizeObserver')) {
-                    return true;
-                  }
-                  if (originalOnError) {
-                    return originalOnError(message, source, lineno, colno, error);
-                  }
-                  return false;
-                };
-              }
-            })();
-          `}
-        </Script>
-        {/* Service Worker temporarily disabled to fix offline detection issues */}
-        {/*<Script id="register-sw" strategy="afterInteractive">
-          {`
-            if ('serviceWorker' in navigator) {
-              window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                  .then(reg => console.log('Service Worker registered'))
-                  .catch(err => console.log('Service Worker registration failed', err));
-              });
-            }
-          `}
-        </Script>*/}
         <ClientProviders>
           {children}
         </ClientProviders>

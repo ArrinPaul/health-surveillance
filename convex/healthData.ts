@@ -1,7 +1,6 @@
 // Convex server functions for health data management
 // Run: npx convex dev to generate the server code
 
-// @ts-ignore - Generated after running: npx convex dev
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 

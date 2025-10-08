@@ -6,8 +6,7 @@ import { Activity, AlertTriangle, Droplet, TrendingUp } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
-// Temporarily disabled AI Suggestions to fix hydration issues
-// import AISuggestions from '@/components/AISuggestions';
+import AISuggestions from '@/components/AISuggestions';
 
 const DiseaseMap = dynamic(() => import('@/components/DiseaseMap'), { ssr: false });
 
@@ -112,15 +111,15 @@ export default function DashboardPage() {
   return (
     <ProtectedRoute allowedRoles={['admin', 'health-worker']}>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">{t('dashboard')}</h1>
-          <p className="text-muted-foreground mt-2">
-            Monitor health surveillance and early warning indicators
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Real-time overview of public health metrics.
           </p>
         </div>
 
-        {/* AI-Powered Suggestions - Temporarily Disabled */}
-        {/* <AISuggestions /> */}
+        {/* AI-Powered Suggestions */}
+        <AISuggestions />
 
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
